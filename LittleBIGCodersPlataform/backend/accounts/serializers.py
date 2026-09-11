@@ -6,6 +6,7 @@ class UserMeSerializer(serializers.ModelSerializer):
     student_id = serializers.SerializerMethodField()
     teacher_id = serializers.SerializerMethodField()
     school_id = serializers.SerializerMethodField()
+    school = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -18,6 +19,7 @@ class UserMeSerializer(serializers.ModelSerializer):
             "student_id",
             "teacher_id",
             "school_id",
+            "school",
         ]
 
     def get_student_id(self, obj):
@@ -38,6 +40,10 @@ class UserMeSerializer(serializers.ModelSerializer):
             return obj.teacher_profile.school.id
 
         return None
+
+    def get_school(self, obj):
+        profile = getattr(obj, 'teacher_profile', None) or getattr(obj, 'student_profile', None)
+        return SchoolSerializer(profile.school).data if profile and profile.school_id else None
 
 
 class SchoolSerializer(serializers.ModelSerializer):

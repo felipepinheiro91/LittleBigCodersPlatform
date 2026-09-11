@@ -24,6 +24,13 @@ class SchoolListView(generics.ListAPIView):
     serializer_class = SchoolSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'admin':
+            return School.objects.all().order_by('name')
+        profile = getattr(user, 'teacher_profile', None) or getattr(user, 'student_profile', None)
+        return School.objects.filter(pk=getattr(profile, 'school_id', None))
+
 
 class ClassListView(generics.ListAPIView):
     serializer_class = ClassSerializer
@@ -37,12 +44,12 @@ class ClassListView(generics.ListAPIView):
 
         if user.role == "teacher" and hasattr(user, "teacher_profile"):
             return Class.objects.select_related("school", "teacher", "teacher__user").filter(
-                teacher=user.teacher_profile
+                teacher=user.teacher_profile, school_id=user.teacher_profile.school_id
             ).order_by("name")
 
         if user.role == "student" and hasattr(user, "student_profile"):
             return Class.objects.select_related("school", "teacher", "teacher__user").filter(
-                enrollments__student=user.student_profile
+                enrollments__student=user.student_profile, school_id=user.student_profile.school_id
             ).distinct().order_by("name")
 
         return Class.objects.none()
@@ -70,6 +77,8 @@ class ClassStudentsListView(generics.ListAPIView):
                 .filter(
                     class_group_id=class_id,
                     class_group__teacher=user.teacher_profile,
+                    class_group__school_id=user.teacher_profile.school_id,
+                    student__school_id=user.teacher_profile.school_id,
                 )
                 .select_related("student", "student__user", "student__school")
                 .order_by("student__user__name")
