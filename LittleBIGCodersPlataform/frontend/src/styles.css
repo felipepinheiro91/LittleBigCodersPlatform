@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+* { box-sizing: border-box; }
+body { margin: 0; color: #281e49; font-family: "Nunito", sans-serif; }
+button, input { font-family: inherit; }
+.accent { color: #f06d55; }
+.logo-mark { align-items: center; background: #5b41d7; border-radius: 11px; color: white; display: flex; font-size: .82rem; font-weight: 900; height: 35px; justify-content: center; width: 38px; }
+.login-page { background: linear-gradient(135deg, #f2efff 0%, #fcf2ed 100%); }
+.login-illustration { background: linear-gradient(145deg, #5d41d5, #39228c); color: white; position: relative; }
+.rocket { align-items: center; display: flex; justify-content: center; min-height: 220px; position: relative; z-index: 1; }
+.orbit { border: 1px solid rgba(255,255,255,.35); border-radius: 50%; position: absolute; }
+.orbit-one { height: 190px; transform: rotate(-25deg); width: 340px; }
+.orbit-two { height: 280px; transform: rotate(40deg); width: 170px; }
+.field-label { color: #554c70; font-size: .875rem; font-weight: 800; margin-bottom: .45rem; }
+.sidebar { background: white; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { background: rgba(255,255,255,.75); border-bottom: 1px solid #eceaf4; }
+.avatar, .small-avatar { align-items: center; background: #ffd15b; border-radius: 50%; color: #5e4400; display: flex; font-weight: 900; justify-content: center; }
+.avatar { height: 42px; width: 42px; }.small-avatar { background: #eae5ff; color: #5b41d7; height: 30px; width: 30px; }
+.hero-card, .teacher-hero { align-items: center; background: linear-gradient(120deg, #6246db, #886be9); border-radius: 24px; color: white; display: flex; gap: 2rem; justify-content: space-between; overflow: hidden; padding: clamp(1.5rem, 4vw, 3rem); position: relative; }
+.teacher-hero { background: linear-gradient(120deg, #ff8b54, #e55b52); }.hero-emoji { font-size: clamp(5rem, 12vw, 9rem); line-height: 1; }
+.metric-card, .content-card, .book-card { background: white; border: 1px solid #eceaf4; border-radius: 18px; padding: 1.35rem; }
+.content-card { box-shadow: 0 8px 22px rgba(54, 39, 112, .04); }.book-card { transition: transform .2s, box-shadow .2s; }.book-card:hover { box-shadow: 0 12px 25px rgba(54, 39, 112, .1); transform: translateY(-2px); }
+.book-cover { align-items: center; border-radius: 12px; color: white; display: flex; font-size: 1.2rem; font-weight: 900; justify-content: center; min-height: 130px; width: 92px; }
+.progress-track { background: #eeeaf8; border-radius: 999px; height: 8px; overflow: hidden; }.progress-value { background: linear-gradient(90deg, #5b41d7, #937df0); border-radius: inherit; height: 100%; }
+.badge-medal { align-items: center; background: #fff5d4; border-radius: 50%; display: flex; font-size: 2rem; height: 78px; justify-content: center; width: 78px; }.ranking-row { border-radius: 12px; padding: .6rem .75rem; }.ranking-row.current { background: #f0edff; color: #4c31c5; }
+.chapter-number { align-items: center; background: #eee9ff; border-radius: 12px; color: #5b41d7; display: flex; font-weight: 900; height: 42px; justify-content: center; min-width: 42px; }.teacher-note { background: #fff6df; border-radius: 14px; padding: 1rem; }.class-preview { background: #f7f6fc; border-radius: 14px; padding: 1.1rem; }.description-box { background: #f8f7fc; border-radius: 10px; padding: 1rem; }
+.filter-card, .bi-kpi { background: white; border: 1px solid #e8e4f2; border-radius: 15px; padding: 1rem; }.filter-card select { background: #f8f7fc; border: 1px solid #ded8eb; border-radius: 9px; color: #332858; font: inherit; padding: .65rem .75rem; width: 100%; }.bi-kpi { border-top: 4px solid #7158df; }.bi-bar-track, .distribution-track { background: #eeeaf7; border-radius: 999px; height: 10px; overflow: hidden; }.bi-bar-score { background: linear-gradient(90deg, #7158df, #a994f0); border-radius: inherit; height: 100%; }.distribution-track { width: 42%; }.insight-note { background: #fff5dd; border-left: 4px solid #f0a51a; border-radius: 8px; padding: .9rem 1rem; }
+table { border-collapse: collapse; } th { color: #77708d; font-size: .75rem; text-align: left; text-transform: uppercase; } th, td { border-bottom: 1px solid #eeeaf4; padding: 1rem .5rem; }
+@media (max-width: 500px) { .overflow-table { overflow-x: auto; }.overflow-table table { min-width: 620px; }.sidebar .logo-mark { margin: auto; }.sidebar > div:first-child > p { display: none; } }
