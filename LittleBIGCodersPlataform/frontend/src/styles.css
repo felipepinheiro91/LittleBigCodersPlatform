@@ -13,6 +13,8 @@ button, input { font-family: inherit; }
 .orbit-two { height: 280px; transform: rotate(40deg); width: 170px; }
 .field-label { color: #554c70; font-size: .875rem; font-weight: 800; margin-bottom: .45rem; }
 .sidebar { background: white; display: flex; flex-direction: column; min-height: 100vh; }
+.sidebar-link { border-radius: 12px !important; gap: .75rem; min-height: 44px; }
+.sidebar-icon { align-items: center; display: inline-flex; font-size: 1.15rem; justify-content: center; width: 24px; }
 .topbar { background: rgba(255,255,255,.75); border-bottom: 1px solid #eceaf4; }
 .avatar, .small-avatar { align-items: center; background: #ffd15b; border-radius: 50%; color: #5e4400; display: flex; font-weight: 900; justify-content: center; }
 .avatar { height: 42px; width: 42px; }.small-avatar { background: #eae5ff; color: #5b41d7; height: 30px; width: 30px; }
@@ -31,7 +33,17 @@ button, input { font-family: inherit; }
 .achievement-progress { height: 12px; }.achievement-tabs button { border-radius: 999px; }
 .earned-badge { align-items: center; background: white; border: 1px solid #eceaf4; border-radius: 18px; display: flex; flex-direction: column; gap: .65rem; padding: 1.25rem .8rem; }
 .chapter-number { align-items: center; background: #eee9ff; border-radius: 12px; color: #5b41d7; display: flex; font-weight: 900; height: 42px; justify-content: center; min-width: 42px; }.teacher-note { background: #fff6df; border-radius: 14px; padding: 1rem; }.class-preview { background: #f7f6fc; border-radius: 14px; padding: 1.1rem; }.description-box { background: #f8f7fc; border-radius: 10px; padding: 1rem; }
+.book-header { background: linear-gradient(120deg, #f0edff, #fff7f0); border: 1px solid #e7e0ff; border-radius: 22px; padding: clamp(1.3rem, 3vw, 2rem); }
+.chapter-card { background: white; border: 1px solid #e8e4f2; border-radius: 22px; box-shadow: 0 8px 24px rgba(54,39,112,.05); padding: clamp(1.1rem, 2.5vw, 1.6rem); }
+.chapter-card .chapter-number { background: linear-gradient(145deg, #7158df, #4c31c5); border-radius: 15px; box-shadow: 0 7px 16px rgba(91,65,215,.22); color: white; font-size: 1.15rem; height: 52px; min-width: 52px; }
+.material-tile { background: #fbfaff; border: 1px solid #e7e1f3; border-radius: 16px; display: flex; flex-direction: column; min-height: 170px; padding: 1rem; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.material-tile:hover { border-color: #a994f0; box-shadow: 0 10px 22px rgba(76,49,197,.11); transform: translateY(-2px); }
+.material-icon { align-items: center; background: #eee9ff; border-radius: 13px; display: flex; flex: 0 0 auto; font-size: 1.55rem; height: 48px; justify-content: center; width: 48px; }
+.material-icon.type-video { background: #ffe8e3; }.material-icon.type-game { background: #e1f8f1; }.material-icon.type-text { background: #fff3d2; }.material-icon.type-quiz { background: #eee9ff; }.material-icon.type-answer_key { background: #e6f7e8; }
+.material-preview { color: #625a75; display: -webkit-box; font-size: .875rem; margin-top: 1rem; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.chapter-empty { background: #f8f7fc; border-radius: 12px; color: #77708d; padding: 1rem; }
 .filter-card, .bi-kpi { background: white; border: 1px solid #e8e4f2; border-radius: 15px; padding: 1rem; }.filter-card select { background: #f8f7fc; border: 1px solid #ded8eb; border-radius: 9px; color: #332858; font: inherit; padding: .65rem .75rem; width: 100%; }.bi-kpi { border-top: 4px solid #7158df; }.bi-bar-track, .distribution-track { background: #eeeaf7; border-radius: 999px; height: 10px; overflow: hidden; }.bi-bar-score { background: linear-gradient(90deg, #7158df, #a994f0); border-radius: inherit; height: 100%; }.distribution-track { width: 42%; }.insight-note { background: #fff5dd; border-left: 4px solid #f0a51a; border-radius: 8px; padding: .9rem 1rem; }
+.metric-icon { align-items: center; background: linear-gradient(145deg, #f1edff, #e5ddff); border-radius: 12px; display: flex; font-size: 1.45rem; height: 46px; justify-content: center; width: 46px; }
 table { border-collapse: collapse; width: 100%; } th { color: #77708d; font-size: .75rem; text-align: left; text-transform: uppercase; } th, td { border-bottom: 1px solid #eeeaf4; padding: 1rem .5rem; }
 .field-label { display: block; }
 select { background: #f8f7fc; border: 1px solid #ded8eb; border-radius: 9px; color: #332858; font: inherit; padding: .65rem .75rem; width: 100%; }
