@@ -49,13 +49,26 @@ A correção é transacional no servidor. A resposta final contém score, total_
 - `GET performance/?class={id}&chapter={id}&student={id}&book={id}`: filtros combináveis, métricas, alunos, capítulos, comparação de turmas, distribuição e pontos de atenção. Disponível para professor e administrador.
 - `GET dashboard/`: indicadores da tela inicial para cada papel, incluindo pontos e pontos dos últimos sete dias para estudantes.
 
+Para administradores, `GET dashboard/` retorna totais de escolas, professores, estudantes, turmas, livros e conteúdo, métricas globais, comparativos por escola e livro e desempenho mensal. Para professores, retorna somente o recorte autorizado de suas turmas.
+
 Média = acertos / questões respondidas em todas as tentativas concluídas. Conclusão = pares aluno/prova concluídos / provas propostas aos alunos com acesso ao livro. Sem respostas, média é null, não zero. Ativo significa possuir tentativa concluída no recorte, não acesso recente ao site. Distribuição possui faixa separada para ausência de tentativas. Atenção sinaliza conclusão abaixo de 70%, acerto abaixo de 60% ou ausência de respostas. Pontos = número de respostas corretas acumuladas. Empates no ranking são ordenados por ID.
 
 Níveis: zero <25%, novice 25–49%, intermediate 50–74%, advanced 75–89%, expert >=90%. Badges conquistados permanecem no histórico mesmo que a média caia após outras tentativas.
 
-## Cadastro e execução
+## Painel de cadastros
 
-Cadastre escolas, usuários, perfis, turmas e matrículas no Django Admin. Cadastre livros e vínculos, acessos, capítulos, materiais e provas com uma alternativa correta por questão. As áreas pedagógicas são criadas por migração. Não há dados fictícios nos relatórios da API.
+Usuários com `role: admin` podem usar os endpoints abaixo. Professores e estudantes recebem `403`.
+
+- `GET/POST admin/{recurso}/` lista e cria cadastros.
+- `GET/PUT/PATCH/DELETE admin/{recurso}/{id}/` consulta, altera ou remove um cadastro.
+- Professores e estudantes são criados com usuário, senha e perfil escolar. Na edição, senha vazia preserva a senha atual.
+- Turmas aceitam `student_ids` e validam se professor e estudantes pertencem à escola.
+- Livros aceitam `teacher_ids`, `class_ids` e `cover` em `multipart/form-data`. Capas JPG, PNG e WebP de até 5 MB são armazenadas em `media/book_covers/`; as respostas expõem `cover_url`.
+- Provas recebem questões e alternativas aninhadas. Cada questão exige duas ou mais alternativas e exatamente uma correta.
+
+A remoção de escolas com vínculos e de registros protegidos por histórico é recusada com erro explicativo. A interface administrativa conduz o cadastro na ordem das dependências e pede confirmação antes de excluir. BookAccess e áreas pedagógicas permanecem disponíveis no Django Admin para operações avançadas.
+
+## Cadastro e execução
 
 ```powershell
 .\.venv-win\Scripts\python.exe -m pip install -r requirements.txt
@@ -64,4 +77,4 @@ Cadastre escolas, usuários, perfis, turmas e matrículas no Django Admin. Cadas
 .\.venv-win\Scripts\python.exe manage.py runserver 127.0.0.1:8000
 ```
 
-Esta entrega adiciona o backend. As telas continuam usando os mocks até trocar suas fontes pelas rotas acima. O projeto está configurado para desenvolvimento local com SQLite. Agregações são calculadas sob demanda; bases grandes precisarão de paginação, agregações em lote e índices conforme volume observado. Não há exportação BI, recuperação de senha ou leitura de câmera porque essas funções não estão implementadas no frontend atual.
+O frontend usa as rotas reais e não possui fallback para mocks. O projeto está configurado para desenvolvimento local com SQLite. Agregações são calculadas sob demanda; bases grandes precisarão de paginação, agregações em lote e índices conforme volume observado. Não há exportação BI, recuperação de senha ou leitura de câmera.

@@ -20,6 +20,9 @@ A API Django é esperada em `http://127.0.0.1:8000/api` por padrão. Para outro 
 - Dashboard, conquistas e ranking consultam os resultados persistidos. O ranking global é anonimizado.
 - Professor: turmas, filtros por turma/livro/capítulo/aluno, indicadores agregados, distribuição, comparativos e histórico individual.
 - Sequências: criação, edição e cópia de sugestões, com todos os campos do planejamento e etapas dinâmicas persistidos no banco.
+- Administrador: central em oito etapas para criar, pesquisar, visualizar, editar e remover escolas, professores, estudantes, turmas, livros, capítulos, materiais e provas completas.
+- A Visão Geral do administrador apresenta indicadores globais, operação por escola, desempenho por livro e evolução mensal.
+- O cadastro de livro aceita capa JPG, PNG ou WebP de até 5 MB; a imagem aparece nas listagens para administradores, professores e estudantes.
 - Todas as consultas têm carregamento, erro com nova tentativa e estado vazio. Mudanças de filtros cancelam consultas antigas.
 
 Contas sem livros ou provas cadastrados mostram estados vazios, não exemplos. O cadastro e os vínculos de livros, turmas, estudantes e materiais são gerenciados pelo backend/admin. Não há cadastro público nem botão de login demonstrativo.

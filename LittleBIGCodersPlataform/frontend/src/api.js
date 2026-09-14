@@ -25,11 +25,12 @@ export function createApi({ storage = window.sessionStorage, fetcher = fetch, on
   }
   async function send(path, options = {}, access) {
     let response;
+    const multipart = typeof FormData !== "undefined" && options.body instanceof FormData;
     try {
       response = await fetcher(`${API_URL}/${path}`, {
         ...options,
-        headers: { ...(options.body ? { "Content-Type": "application/json" } : {}), ...(access ? { Authorization: `Bearer ${access}` } : {}), ...options.headers },
-        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+        headers: { ...(options.body && !multipart ? { "Content-Type": "application/json" } : {}), ...(access ? { Authorization: `Bearer ${access}` } : {}), ...options.headers },
+        body: options.body === undefined ? undefined : multipart ? options.body : JSON.stringify(options.body),
       });
     } catch (error) {
       if (error.name === "AbortError") throw error;

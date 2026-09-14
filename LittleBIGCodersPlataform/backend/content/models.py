@@ -5,6 +5,7 @@ class Book(models.Model):
     school_year = models.CharField(max_length=30)
     edition = models.CharField(max_length=60, blank=True)
     description = models.TextField(blank=True)
+    cover = models.FileField(upload_to='book_covers/', blank=True)
     active = models.BooleanField(default=True)
     teachers = models.ManyToManyField('accounts.Teacher', blank=True, related_name='books')
     classes = models.ManyToManyField('accounts.Class', blank=True, related_name='books')

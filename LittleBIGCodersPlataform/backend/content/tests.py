@@ -98,6 +98,36 @@ class PlatformTests(APITestCase):
         source.refresh_from_db()
         self.assertEqual(source.title, 'Sugestão')
 
+    def test_admin_guided_creation_end_to_end(self):
+        admin = User.objects.create_superuser(username='admin', login='admin', name='Admin', role='admin', password='test-password')
+        self.client.force_authenticate(admin)
+        school = self.client.post('/api/admin/schools/', {'name': 'Escola Nova', 'city': 'Salvador', 'state': 'BA'}, format='json')
+        self.assertEqual(school.status_code, 201)
+        teacher = self.client.post('/api/admin/teachers/', {'name': 'Docente', 'login': 'docente.novo', 'email': 'docente@nova.test', 'password': 'senha-segura', 'school': school.data['id']}, format='json')
+        student = self.client.post('/api/admin/students/', {'name': 'Discente', 'login': 'discente.novo', 'password': 'senha-segura', 'school': school.data['id'], 'grade': '6'}, format='json')
+        self.assertEqual(teacher.status_code, 201)
+        self.assertEqual(student.status_code, 201)
+        group = self.client.post('/api/admin/classes/', {'name': '6º A', 'year': 2026, 'school': school.data['id'], 'teacher': teacher.data['id'], 'student_ids': [student.data['id']]}, format='json')
+        self.assertEqual(group.status_code, 201)
+        book = self.client.post('/api/admin/books/', {'title': 'Livro novo', 'school_year': '6', 'teacher_ids': [teacher.data['id']], 'class_ids': [group.data['id']]}, format='json')
+        chapter = self.client.post('/api/admin/chapters/', {'book': book.data['id'], 'number': 1, 'title': 'Capítulo inicial'}, format='json')
+        material = self.client.post('/api/admin/materials/', {'chapter': chapter.data['id'], 'title': 'Avaliação', 'type': 'quiz'}, format='json')
+        quiz = self.client.post('/api/admin/quizzes/', {'material': material.data['id'], 'title': 'Prova inicial', 'description': '', 'active': True, 'questions': [{'statement': 'Qual opção?', 'order': 1, 'knowledge_area': None, 'alternatives': [{'text': 'Correta', 'order': 1, 'is_correct': True}, {'text': 'Incorreta', 'order': 2, 'is_correct': False}]}]}, format='json')
+        self.assertEqual(quiz.status_code, 201)
+        self.assertEqual(Quiz.objects.get(pk=quiz.data['id']).questions.count(), 1)
+        edited_student = self.client.put(f"/api/admin/students/{student.data['id']}/", {'name': 'Discente Editado', 'login': 'discente.novo', 'email': '', 'password': '', 'school': school.data['id'], 'grade': '7', 'is_individual_customer': False}, format='json')
+        self.assertEqual(edited_student.status_code, 200)
+        self.assertEqual(edited_student.data['grade'], '7')
+        edited_class = self.client.put(f"/api/admin/classes/{group.data['id']}/", {'name': '7º A', 'year': 2027, 'school': school.data['id'], 'teacher': teacher.data['id'], 'student_ids': [student.data['id']]}, format='json')
+        self.assertEqual(edited_class.status_code, 200)
+        self.assertEqual(edited_class.data['student_ids'], [student.data['id']])
+        self.assertEqual(self.client.delete(f"/api/admin/quizzes/{quiz.data['id']}/").status_code, 204)
+        self.assertEqual(self.client.delete(f"/api/admin/schools/{school.data['id']}/").status_code, 400)
+
+    def test_teacher_cannot_use_admin_creation_api(self):
+        self.client.force_authenticate(self.teacher_user)
+        self.assertEqual(self.client.post('/api/admin/schools/', {'name': 'Proibida'}).status_code, 403)
+
     def test_report_filters_and_school_isolation(self):
         self.submit(self.correct)
         self.client.force_authenticate(self.teacher_user)

@@ -7,10 +7,14 @@ class BookSerializer(serializers.ModelSerializer):
     accessible = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     access = serializers.SerializerMethodField()
+    cover_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
-        fields = ['id', 'title', 'school_year', 'edition', 'description', 'active', 'accessible', 'progress', 'access']
+        fields = ['id', 'title', 'school_year', 'edition', 'description', 'cover_url', 'active', 'accessible', 'progress', 'access']
+
+    def get_cover_url(self, obj):
+        return self.context['request'].build_absolute_uri(obj.cover.url) if obj.cover else None
 
     def get_accessible(self, obj):
         return visible_books(self.context['request'].user).filter(pk=obj.pk).exists()
