@@ -2,7 +2,8 @@ from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from rest_framework import permissions, serializers, viewsets
 
-from content.models import Book, Chapter, Material
+from content.models import Book, Chapter, Material, DidacticSequence
+from content.serializers import SequenceSerializer
 from quizzes.models import Alternative, Question, Quiz
 from .models import Class, ClassStudent, School, Student, Teacher, User
 
@@ -10,6 +11,17 @@ from .models import Class, ClassStudent, School, Student, Teacher, User
 class IsPlatformAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == 'admin'
+
+
+class AdminSequenceSerializer(SequenceSerializer):
+    chapter_title = serializers.CharField(source='chapter.title', read_only=True)
+    book_title = serializers.CharField(source='chapter.book.title', read_only=True)
+    book_id = serializers.IntegerField(source='chapter.book_id', read_only=True)
+
+    def validate_estimated_classes(self, value):
+        if value < 1:
+            raise serializers.ValidationError('Informe pelo menos uma aula.')
+        return value
 
 
 class AdminModelViewSet(viewsets.ModelViewSet):
@@ -229,17 +241,38 @@ class AdminQuestionSerializer(serializers.ModelSerializer):
         fields = ['statement', 'order', 'knowledge_area', 'alternatives']
 
     def validate_alternatives(self, alternatives):
-        if len(alternatives) < 2 or sum(item['is_correct'] for item in alternatives) != 1:
+        if len(alternatives) < 2 or sum(item.get('is_correct', False) for item in alternatives) != 1:
             raise serializers.ValidationError('Cada questão precisa de pelo menos duas alternativas e exatamente uma correta.')
         return alternatives
 
 
 class AdminQuizSerializer(serializers.ModelSerializer):
     questions = AdminQuestionSerializer(many=True)
+    chapter = serializers.PrimaryKeyRelatedField(queryset=Chapter.objects.all(), write_only=True, required=False)
+    chapter_id = serializers.IntegerField(source='material.chapter_id', read_only=True)
+    chapter_title = serializers.CharField(source='material.chapter.title', read_only=True)
+    book_title = serializers.CharField(source='material.chapter.book.title', read_only=True)
+    has_attempts = serializers.SerializerMethodField()
 
     class Meta:
         model = Quiz
-        fields = ['id', 'material', 'title', 'description', 'active', 'questions']
+        fields = ['id', 'material', 'chapter', 'chapter_id', 'chapter_title', 'book_title', 'title', 'description', 'active', 'questions', 'has_attempts']
+        extra_kwargs = {'material': {'required': False}}
+
+    def get_has_attempts(self, obj):
+        return obj.attempts.exists()
+
+    def validate(self, attrs):
+        if not self.instance and not attrs.get('material') and not attrs.get('chapter'):
+            raise serializers.ValidationError({'chapter': 'Selecione o capítulo do desafio.'})
+        if attrs.get('material') and attrs.get('chapter'):
+            raise serializers.ValidationError('Informe um capítulo ou um material existente, não ambos.')
+        if self.instance and 'chapter' in attrs:
+            raise serializers.ValidationError({'chapter': 'O capítulo de um desafio existente não pode ser alterado.'})
+        if self.instance and self.instance.attempts.exists():
+            if 'questions' in attrs or ('material' in attrs and attrs['material'].pk != self.instance.material_id):
+                raise serializers.ValidationError('O desafio possui tentativas. Edite apenas título, descrição ou situação.')
+        return attrs
 
     def validate_material(self, material):
         if material.type != 'quiz':
@@ -254,6 +287,12 @@ class AdminQuizSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         questions = validated_data.pop('questions')
+        chapter = validated_data.pop('chapter', None)
+        if chapter:
+            validated_data['material'] = Material.objects.create(
+                chapter=chapter, title=validated_data['title'], type='quiz',
+                content=validated_data.get('description', ''),
+            )
         quiz = Quiz.objects.create(**validated_data)
         for question_data in questions:
             alternatives = question_data.pop('alternatives')
@@ -269,6 +308,7 @@ class AdminQuizSerializer(serializers.ModelSerializer):
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
+        Material.objects.filter(pk=instance.material_id).update(title=instance.title, content=instance.description)
         if questions is not None:
             instance.questions.all().delete()
             for question_data in questions:
@@ -286,6 +326,14 @@ class SchoolAdminViewSet(AdminModelViewSet):
         if instance.classes.exists() or instance.teacher_set.exists() or instance.student_set.exists():
             raise serializers.ValidationError('Remova ou transfira as turmas e pessoas vinculadas antes de excluir a escola.')
         super().perform_destroy(instance)
+
+
+class SequenceAdminViewSet(AdminModelViewSet):
+    queryset = DidacticSequence.objects.filter(teacher__isnull=True).select_related('chapter__book').order_by('title')
+    serializer_class = AdminSequenceSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(teacher=None, parent=None)
 
 
 class TeacherAdminViewSet(AdminModelViewSet):

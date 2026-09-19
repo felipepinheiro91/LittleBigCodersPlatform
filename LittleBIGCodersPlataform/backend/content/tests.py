@@ -124,6 +124,115 @@ class PlatformTests(APITestCase):
         self.assertEqual(self.client.delete(f"/api/admin/quizzes/{quiz.data['id']}/").status_code, 204)
         self.assertEqual(self.client.delete(f"/api/admin/schools/{school.data['id']}/").status_code, 400)
 
+    def challenge_payload(self):
+        return {
+            'chapter': self.chapter.pk, 'title': 'Desafio de lógica',
+            'description': 'Escolha uma resposta', 'active': True,
+            'questions': [{'statement': 'Qual opção?', 'order': 1, 'alternatives': [
+                {'text': 'Sim', 'order': 1, 'is_correct': True},
+                {'text': 'Não', 'order': 2},
+            ]}],
+        }
+
+    def authenticate_admin(self):
+        admin = User.objects.create_superuser(username='admin', login='admin', name='Admin', role='admin', password='test-password')
+        self.client.force_authenticate(admin)
+
+    def test_admin_creates_challenge_directly_in_chapter(self):
+        self.authenticate_admin()
+        response = self.client.post('/api/admin/quizzes/', self.challenge_payload(), format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        challenge = Quiz.objects.get(pk=response.data['id'])
+        self.assertEqual(challenge.material.chapter, self.chapter)
+        self.assertEqual(challenge.material.type, 'quiz')
+        self.assertEqual(challenge.material.title, challenge.title)
+        self.assertEqual(response.data['book_title'], self.book.title)
+        self.assertFalse(response.data['has_attempts'])
+        self.client.force_authenticate(self.user)
+        visible = self.client.get(f'/api/quizzes/{challenge.pk}/')
+        self.assertEqual(visible.status_code, 200)
+        self.assertNotIn('is_correct', visible.data['questions'][0]['alternatives'][0])
+
+    def test_invalid_challenge_does_not_leave_material(self):
+        self.authenticate_admin()
+        before = Material.objects.count()
+        payload = self.challenge_payload()
+        payload['questions'][0]['alternatives'][0]['is_correct'] = False
+        self.assertEqual(self.client.post('/api/admin/quizzes/', payload, format='json').status_code, 400)
+        self.assertEqual(Material.objects.count(), before)
+        payload = self.challenge_payload()
+        del payload['chapter']
+        self.assertEqual(self.client.post('/api/admin/quizzes/', payload, format='json').status_code, 400)
+        payload['chapter'] = self.chapter.pk
+        payload['material'] = self.material.pk
+        self.assertEqual(self.client.post('/api/admin/quizzes/', payload, format='json').status_code, 400)
+
+    def test_admin_edits_used_challenge_without_changing_questions(self):
+        self.submit(self.correct)
+        self.authenticate_admin()
+        endpoint = f'/api/admin/quizzes/{self.quiz.pk}/'
+        response = self.client.patch(endpoint, {'title': 'Título atualizado', 'description': 'Novas orientações', 'active': False}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(response.data['has_attempts'])
+        self.material.refresh_from_db()
+        self.assertEqual(self.material.title, 'Título atualizado')
+        self.assertEqual(self.client.patch(endpoint, {'questions': self.challenge_payload()['questions']}, format='json').status_code, 400)
+        self.assertTrue(Question.objects.filter(pk=self.question.pk).exists())
+
+    def test_challenge_admin_endpoints_require_admin(self):
+        for user in [self.user, self.teacher_user]:
+            self.client.force_authenticate(user)
+            self.assertEqual(self.client.get('/api/admin/quizzes/').status_code, 403)
+            self.assertEqual(self.client.post('/api/admin/quizzes/', self.challenge_payload(), format='json').status_code, 403)
+
+    def test_admin_sequence_creation_copy_edit_and_delete(self):
+        self.authenticate_admin()
+        payload = {
+            'chapter': self.chapter.pk, 'title': 'Projeto de computação',
+            'axis': 'Pensamento computacional', 'duration': '2 semanas',
+            'estimated_classes': 4, 'format': 'Grupos', 'status': 'pending',
+            'description': 'Construção de um jogo', 'ventures': 'Jogo final',
+            'rationale': 'Aprender criando', 'general_objective': 'Criar algoritmos',
+            'specific_objectives': 'Identificar padrões', 'learning_outcomes': 'Colaboração',
+            'contents': 'Sequências e repetições',
+            'activities': [{'title': 'Planejar', 'description': 'Desenhar o jogo'}],
+        }
+        response = self.client.post('/api/admin/sequences/', payload, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        sequence_id = response.data['id']
+        self.assertIsNone(response.data['teacher'])
+        self.assertEqual(response.data['book_id'], self.book.pk)
+        for field, value in payload.items():
+            self.assertEqual(response.data[field], value)
+        self.client.force_authenticate(self.teacher_user)
+        self.assertEqual(self.client.get(f'/api/sequences/{sequence_id}/').status_code, 200)
+        copied = self.client.post(f'/api/sequences/{sequence_id}/copy/')
+        self.assertEqual(copied.status_code, 201)
+        self.assertEqual(copied.data['activities'], payload['activities'])
+        self.assertEqual(self.client.get('/api/admin/sequences/').status_code, 403)
+        self.authenticate_admin_for_sequence_test(sequence_id, copied.data['id'])
+
+    def authenticate_admin_for_sequence_test(self, sequence_id, copy_id):
+        self.client.force_authenticate(User.objects.get(login='admin'))
+        endpoint = f'/api/admin/sequences/{sequence_id}/'
+        self.assertEqual(self.client.patch(endpoint, {'title': 'Projeto revisado'}, format='json').status_code, 200)
+        self.assertEqual(self.client.get(f'/api/admin/sequences/{copy_id}/').status_code, 404)
+        self.assertEqual(self.client.delete(endpoint).status_code, 204)
+        self.assertTrue(DidacticSequence.objects.filter(pk=copy_id).exists())
+
+    def test_admin_sequence_validation_and_permissions(self):
+        self.authenticate_admin()
+        for payload in [
+            {'chapter': self.chapter.pk, 'title': 'Inválida', 'estimated_classes': 0, 'activities': []},
+            {'chapter': self.chapter.pk, 'title': 'Inválida', 'activities': [{'description': 'Sem título'}]},
+        ]:
+            self.assertEqual(self.client.post('/api/admin/sequences/', payload, format='json').status_code, 400)
+        for user in [self.user, self.teacher_user, None]:
+            self.client.force_authenticate(user)
+            expected = 403 if user else 401
+            self.assertEqual(self.client.get('/api/admin/sequences/').status_code, expected)
+            self.assertEqual(self.client.post('/api/admin/sequences/', {}, format='json').status_code, expected)
+
     def test_teacher_cannot_use_admin_creation_api(self):
         self.client.force_authenticate(self.teacher_user)
         self.assertEqual(self.client.post('/api/admin/schools/', {'name': 'Proibida'}).status_code, 403)

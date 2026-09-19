@@ -20,7 +20,8 @@ A API Django é esperada em `http://127.0.0.1:8000/api` por padrão. Para outro 
 - Dashboard, conquistas e ranking consultam os resultados persistidos. O ranking global é anonimizado.
 - Professor: turmas, filtros por turma/livro/capítulo/aluno, indicadores agregados, distribuição, comparativos e histórico individual.
 - Sequências: criação, edição e cópia de sugestões, com todos os campos do planejamento e etapas dinâmicas persistidos no banco.
-- Administrador: central em oito etapas para criar, pesquisar, visualizar, editar e remover escolas, professores, estudantes, turmas, livros, capítulos, materiais e provas completas.
+- Administrador: painel abre em Livros, com abas para capítulos, desafios, materiais e cadastros escolares. Permite criar, pesquisar, editar e remover registros.
+- Para criar conteúdo: cadastre o livro (com capa opcional), adicione capítulos e abra Desafios. Escolha livro e capítulo, escreva questões e alternativas e marque uma resposta correta por questão. O material de prova é criado automaticamente, sem cadastro intermediário. Desafios com tentativas permitem alterar título, orientações e situação, preservando as questões.
 - A Visão Geral do administrador apresenta indicadores globais, operação por escola, desempenho por livro e evolução mensal.
 - O cadastro de livro aceita capa JPG, PNG ou WebP de até 5 MB; a imagem aparece nas listagens para administradores, professores e estudantes.
 - Todas as consultas têm carregamento, erro com nova tentativa e estado vazio. Mudanças de filtros cancelam consultas antigas.
@@ -28,6 +29,8 @@ A API Django é esperada em `http://127.0.0.1:8000/api` por padrão. Para outro 
 Contas sem livros ou provas cadastrados mostram estados vazios, não exemplos. O cadastro e os vínculos de livros, turmas, estudantes e materiais são gerenciados pelo backend/admin. Não há cadastro público nem botão de login demonstrativo.
 
 ## Validação manual
+
+No painel administrativo, a aba **Sequências didáticas** permite selecionar livro e capítulo e cadastrar todos os campos do planejamento, incluindo atividades/etapas. Use **Visualizar e editar** para atualizar ou remover sugestões. Professores com acesso ao livro podem copiar as sugestões para personalizar, sem alterar o original.
 
 1. Inicie o Django na porta 8000 e o Vite na porta 5173 (origem permitida pelo CORS).
 2. Entre com uma conta cadastrada e confirme escola, livros e turmas; recarregue a aba para validar a sessão.

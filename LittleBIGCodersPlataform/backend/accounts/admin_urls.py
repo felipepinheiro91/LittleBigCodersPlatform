@@ -2,6 +2,7 @@ from rest_framework.routers import DefaultRouter
 from .admin_api import (
     BookAdminViewSet, ChapterAdminViewSet, ClassAdminViewSet, MaterialAdminViewSet,
     QuizAdminViewSet, SchoolAdminViewSet, StudentAdminViewSet, TeacherAdminViewSet,
+    SequenceAdminViewSet,
 )
 
 router = DefaultRouter()
@@ -10,6 +11,7 @@ for prefix, view in [
     ('students', StudentAdminViewSet), ('classes', ClassAdminViewSet),
     ('books', BookAdminViewSet), ('chapters', ChapterAdminViewSet),
     ('materials', MaterialAdminViewSet), ('quizzes', QuizAdminViewSet),
+    ('sequences', SequenceAdminViewSet),
 ]:
     router.register(prefix, view, basename=f'admin-{prefix}')
 

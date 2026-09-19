@@ -1,27 +1,39 @@
 import React, { useState } from "react";
 import { Badge, Box, Button, Flex, Heading, Input, SimpleGrid, Stack, Text, Textarea } from "@chakra-ui/react";
 import { Empty, Field, PageTitle, Resource, useApi, useResource } from "./ui";
+import { SequenceForm } from "./sequences";
 
 const sections = [
+  ["books", "📚", "Livros", "Cadastre capas e organize sua coleção"],
+  ["chapters", "📖", "Capítulos", "Estruture o conteúdo de cada livro"],
+  ["sequences", "📝", "Sequências didáticas", "Planejamentos sugeridos por capítulo"],
+  ["quizzes", "🧩", "Desafios", "Crie questões e marque as respostas corretas"],
+  ["materials", "🎮", "Materiais", "Adicione leituras, vídeos e jogos"],
   ["schools", "🏫", "Escolas", "Cadastre a instituição"],
   ["teachers", "👨‍🏫", "Professores", "Vincule docentes à escola"],
   ["students", "🎓", "Estudantes", "Crie acessos dos alunos"],
   ["classes", "👥", "Turmas", "Organize professor e alunos"],
-  ["books", "📚", "Livros", "Associe às turmas e docentes"],
-  ["chapters", "📖", "Capítulos", "Estruture o conteúdo"],
-  ["materials", "🎮", "Materiais", "Adicione vídeos, jogos e provas"],
-  ["quizzes", "🧩", "Provas", "Monte questões e alternativas"],
 ];
 
 export function AdminPanel() {
   const api = useApi();
-  const [section, setSection] = useState("schools");
+  const [section, setSection] = useState("books");
   const [mode, setMode] = useState("create");
   const [editing, setEditing] = useState(null);
   const [search, setSearch] = useState("");
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
-  const resources = Object.fromEntries(sections.map(([key]) => [key, useResource(`admin/${key}/`)]));
+  const resources = {
+    books: useResource("admin/books/"),
+    chapters: useResource("admin/chapters/"),
+    sequences: useResource("admin/sequences/"),
+    quizzes: useResource("admin/quizzes/"),
+    materials: useResource("admin/materials/"),
+    schools: useResource("admin/schools/"),
+    teachers: useResource("admin/teachers/"),
+    students: useResource("admin/students/"),
+    classes: useResource("admin/classes/"),
+  };
   const reloadAll = () => Object.values(resources).forEach(resource => resource.reload());
   const active = sections.find(item => item[0] === section);
   function chooseSection(key) { setSection(key); setEditing(null); setSearch(""); setNotice(""); setError(""); }
@@ -32,7 +44,7 @@ export function AdminPanel() {
     try { await api.request(`admin/${section}/${item.id}/`, { method: "DELETE" }); setEditing(null); setNotice(`${label} foi removido.`); reloadAll(); }
     catch (reason) { setError(reason.message); }
   }
-  return <><Box className="admin-hero"><Badge colorPalette="yellow" variant="solid">CENTRAL DE CADASTROS</Badge><Heading size="3xl" mt="3">Prepare a plataforma para sua escola</Heading><Text mt="2">Crie, consulte e mantenha os dados da plataforma em um único lugar.</Text></Box><SimpleGrid className="admin-steps" columns={{ base: 2, md: 4, xl: 8 }} gap="3">{sections.map(([key, icon, label], index) => <button className={`admin-step ${section === key ? "active" : ""}`} key={key} onClick={() => chooseSection(key)}><span>{icon}</span><small>Etapa {index + 1}</small><strong>{label}</strong></button>)}</SimpleGrid><Flex className="admin-mode-switch" gap="2"><Button colorPalette="purple" variant={mode === "create" ? "solid" : "outline"} onClick={() => { setMode("create"); setEditing(null); }}>＋ Criar novo</Button><Button colorPalette="purple" variant={mode === "manage" ? "solid" : "outline"} onClick={() => setMode("manage")}>✏️ Visualizar e editar</Button></Flex>{notice && <Text role="status" color="green.700">✅ {notice}</Text>}{error && <Text role="alert" color="red.700">{error}</Text>}<SimpleGrid columns={{ base: 1, xl: 3 }} gap="5"><Box gridColumn={{ xl: "span 2" }}>{mode === "create" ? <CreateSection section={section} resources={resources} onCreated={() => { reloadAll(); setNotice("Cadastro criado com sucesso."); }} /> : editing ? <CreateSection section={section} resources={resources} editing={editing} onCreated={() => { reloadAll(); setNotice("Alterações salvas com sucesso."); setEditing(null); }} onCancel={() => setEditing(null)} /> : <Box className="content-card"><PageTitle title={`Editar ${active[2].toLowerCase()}`} subtitle="Selecione um cadastro na lista ao lado para abrir o formulário de edição." /><Text fontSize="6xl" mt="8" aria-hidden="true">{active[1]}</Text></Box>}</Box><Box className="content-card"><Heading size="lg">{active[1]} {active[2]} cadastrados</Heading><Text color="gray.600" fontSize="sm" mb="4">{mode === "manage" ? "Pesquise, edite ou remova um registro." : active[3]}</Text>{mode === "manage" && <Input mb="4" placeholder="Buscar por nome ou título" value={search} onChange={event => setSearch(event.target.value)} />}<Resource resource={resources[section]}>{items => { const filtered = items.filter(item => `${item.name ?? item.title} ${item.school_name ?? ""}`.toLowerCase().includes(search.toLowerCase())); return filtered.length ? <Stack gap="2" maxH="580px" overflowY="auto">{filtered.map(item => <Box className={`admin-record ${editing?.id === item.id ? "selected" : ""}`} key={item.id}><Text fontWeight="800">{item.name ?? item.title}</Text><Text fontSize="xs" color="gray.600">#{item.id} {item.school_name ? `· ${item.school_name}` : item.book_title ? `· ${item.book_title}` : item.chapter_title ? `· ${item.chapter_title}` : ""}</Text>{mode === "manage" && <Flex gap="2" mt="3"><Button size="sm" colorPalette="purple" variant="outline" onClick={() => setEditing(item)}>Editar</Button><Button size="sm" colorPalette="red" variant="outline" onClick={() => remove(item)}>Remover</Button></Flex>}</Box>)}</Stack> : <Empty>Nenhum registro encontrado.</Empty>; }}</Resource></Box></SimpleGrid></>;
+  return <><Box className="admin-hero"><Badge colorPalette="yellow" variant="solid">PAINEL ADMINISTRATIVO</Badge><Heading size="3xl" mt="3">Crie livros e desafios para seus alunos</Heading><Text mt="2">Comece pelo livro, adicione os capítulos e crie os desafios com questões e alternativas. Gerencie também materiais, escolas e usuários.</Text></Box><SimpleGrid className="admin-steps" columns={{ base: 2, md: 4 }} gap="3">{sections.map(([key, icon, label]) => <button className={`admin-step ${section === key ? "active" : ""}`} key={key} onClick={() => chooseSection(key)}><span>{icon}</span><small>{key === "quizzes" ? "Questões e respostas" : "Cadastro e edição"}</small><strong>{label}</strong></button>)}</SimpleGrid><Flex className="admin-mode-switch" gap="2"><Button colorPalette="purple" variant={mode === "create" ? "solid" : "outline"} onClick={() => { setMode("create"); setEditing(null); }}>＋ Criar novo</Button><Button colorPalette="purple" variant={mode === "manage" ? "solid" : "outline"} onClick={() => setMode("manage")}>✏️ Visualizar e editar</Button></Flex>{notice && <Text role="status" color="green.700">✅ {notice}</Text>}{error && <Text role="alert" color="red.700">{error}</Text>}<SimpleGrid columns={{ base: 1, xl: 3 }} gap="5"><Box gridColumn={{ xl: "span 2" }}>{mode === "create" ? <CreateSection section={section} resources={resources} onCreated={() => { reloadAll(); setNotice("Cadastro criado com sucesso."); }} /> : editing ? <CreateSection section={section} resources={resources} editing={editing} onCreated={() => { reloadAll(); setNotice("Alterações salvas com sucesso."); setEditing(null); }} onCancel={() => setEditing(null)} /> : <Box className="content-card"><PageTitle title={`Editar ${active[2].toLowerCase()}`} subtitle="Selecione um cadastro na lista ao lado para abrir o formulário de edição." /><Text fontSize="6xl" mt="8" aria-hidden="true">{active[1]}</Text></Box>}</Box><Box className="content-card"><Heading size="lg">{active[1]} {active[2]} cadastrados</Heading><Text color="gray.600" fontSize="sm" mb="4">{mode === "manage" ? "Pesquise, edite ou remova um registro." : active[3]}</Text>{mode === "manage" && <Input mb="4" placeholder="Buscar por nome ou título" value={search} onChange={event => setSearch(event.target.value)} />}<Resource resource={resources[section]}>{items => { const filtered = items.filter(item => `${item.name ?? item.title} ${item.school_name ?? ""}`.toLowerCase().includes(search.toLowerCase())); return filtered.length ? <Stack gap="2" maxH="580px" overflowY="auto">{filtered.map(item => <Box className={`admin-record ${editing?.id === item.id ? "selected" : ""}`} key={item.id}>{item.cover_url && <img className="admin-cover-preview" src={item.cover_url} alt={`Capa de ${item.title}`} />}<Text fontWeight="800">{item.name ?? item.title}</Text><Text fontSize="xs" color="gray.600">#{item.id} {item.school_name ? `· ${item.school_name}` : item.book_title ? `· ${item.book_title}` : item.chapter_title ? `· ${item.chapter_title}` : ""}</Text>{mode === "manage" && <Flex gap="2" mt="3"><Button size="sm" colorPalette="purple" variant="outline" onClick={() => setEditing(item)}>Editar</Button><Button size="sm" colorPalette="red" variant="outline" onClick={() => remove(item)}>Remover</Button></Flex>}</Box>)}</Stack> : <Empty>Nenhum registro encontrado.</Empty>; }}</Resource></Box></SimpleGrid></>;
 }
 
 export function AdminOverview({ navigate }) {
@@ -56,8 +68,20 @@ function CreateSection({ section, resources, onCreated, editing = null, onCancel
     materials: { chapter: "", title: "", type: "text", url: "", content: "", teacher_only: false, knowledge_areas: [] },
   };
   if (section === "quizzes") return <QuizForm resources={resources} onCreated={onCreated} editing={editing} onCancel={onCancel} />;
+  if (section === "sequences") return <AdminSequenceForm key={editing?.id ?? "new-sequence"} resources={resources} editing={editing} onCreated={onCreated} onCancel={onCancel} />;
   const initial = editing ? { ...defaults[section], ...editing, password: "" } : defaults[section];
   return <BasicForm key={`${section}-${editing?.id ?? "new"}`} title={editing ? `✏️ Editar · ${editing.name ?? editing.title}` : labels[section]} endpoint={`admin/${section}/`} initial={initial} editing={editing} onCreated={onCreated} onCancel={onCancel}>{({ form, set }) => <Fields section={section} form={form} set={set} resources={resources} editing={Boolean(editing)} />}</BasicForm>;
+}
+
+function AdminSequenceForm({ resources, editing, onCreated, onCancel }) {
+  const [bookId, setBookId] = useState(String(editing?.book_id ?? ""));
+  const [chapterId, setChapterId] = useState(String(editing?.chapter ?? ""));
+  const [revision, setRevision] = useState(0);
+  return <SequenceForm key={revision} sequence={editing ?? {}} chapter={chapterId} apiPath="admin/sequences/" onCancel={onCancel} onSaved={() => { if (!editing) setRevision(value => value + 1); onCreated(); }}>
+    <Text color="gray.600">A sequência será disponibilizada como sugestão aos professores com acesso ao livro. Eles poderão copiar e personalizar o planejamento.</Text>
+    <Resource resource={resources.books}>{books => <Field label="Livro *"><select required value={bookId} onChange={event => { setBookId(event.target.value); setChapterId(""); }}><option value="">Selecione o livro</option>{books.map(book => <option key={book.id} value={book.id}>{book.title} · {book.school_year}</option>)}</select></Field>}</Resource>
+    <Resource resource={resources.chapters}>{chapters => <Box><Field label="Capítulo *"><select required disabled={!bookId} value={chapterId} onChange={event => setChapterId(event.target.value)}><option value="">Selecione o capítulo</option>{chapters.filter(chapter => String(chapter.book) === bookId).map(chapter => <option key={chapter.id} value={chapter.id}>{chapter.number}. {chapter.title}</option>)}</select></Field>{bookId && !chapters.some(chapter => String(chapter.book) === bookId) && <Text color="orange.700">Cadastre um capítulo para este livro na aba Capítulos.</Text>}</Box>}</Resource>
+  </SequenceForm>;
 }
 
 function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, children }) {
@@ -70,7 +94,14 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
   async function submit(event) {
     event.preventDefault(); setBusy(true); setError(""); setMessage("");
     try {
-      let body = form;
+      let body = { ...form };
+      if (endpoint === "admin/quizzes/") {
+        if (editing?.has_attempts) delete body.questions;
+        else body.questions = form.questions.map((question, index) => ({
+          ...question, order: index + 1,
+          alternatives: question.alternatives.map((alternative, position) => ({ ...alternative, order: position + 1 })),
+        }));
+      }
       if (form.cover_file instanceof File) {
         body = new FormData();
         Object.entries(form).forEach(([key, value]) => {
@@ -80,7 +111,7 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
         });
         body.append("cover", form.cover_file);
       }
-      await api.request(editing ? `${endpoint}${editing.id}/` : endpoint, { method: editing ? "PUT" : "POST", body });
+      await api.request(editing ? `${endpoint}${editing.id}/` : endpoint, { method: editing ? (endpoint === "admin/quizzes/" ? "PATCH" : "PUT") : "POST", body });
       if (!editing) setForm(initial); setMessage(editing ? "Alterações salvas." : "Cadastro criado com sucesso."); onCreated();
     }
     catch (reason) { setError(reason.message); }
@@ -109,9 +140,36 @@ function Check({ label, checked, onChange }) {
 
 function QuizForm({ resources, onCreated, editing, onCancel }) {
   const emptyQuestion = () => ({ statement: "", order: 1, knowledge_area: null, alternatives: [{ text: "", order: 1, is_correct: true }, { text: "", order: 2, is_correct: false }] });
-  const initial = editing ? { material: "", title: "", description: "", active: true, questions: [emptyQuestion()], ...editing } : { material: "", title: "", description: "", active: true, questions: [emptyQuestion()] };
-  return <BasicForm key={editing?.id ?? "new-quiz"} title={editing ? `✏️ Editar · ${editing.title}` : "🧩 Nova prova"} endpoint="admin/quizzes/" initial={initial} editing={editing} onCreated={onCreated} onCancel={onCancel}>{({ form, set }) => {
+  const initial = editing ? { ...editing } : { book_id: "", chapter: "", title: "", description: "", active: true, questions: [emptyQuestion()] };
+  return <BasicForm key={editing?.id ?? "new-quiz"} title={editing ? `✏️ Editar desafio · ${editing.title}` : "🧩 Novo desafio"} endpoint="admin/quizzes/" initial={initial} editing={editing} onCreated={onCreated} onCancel={onCancel}>{({ form, set }) => {
     const updateQuestion = (index, updater) => set("questions", form.questions.map((question, position) => position === index ? updater(question) : question));
-    return <>{<Resource resource={resources.materials}>{items => <Field label="Material do tipo Prova *"><select required value={form.material} onChange={event => set("material", event.target.value)}><option value="">Selecione o material</option>{items.filter(item => item.type === "quiz").map(item => <option key={item.id} value={item.id}>{item.title} · {item.chapter_title}</option>)}</select></Field>}</Resource>}<Field label="Título da prova *" required value={form.title} onChange={event => set("title", event.target.value)} /><Field label="Orientações"><Textarea value={form.description} onChange={event => set("description", event.target.value)} /></Field>{form.questions.map((question, questionIndex) => <Box className="question-editor" key={questionIndex}><Flex justify="space-between" gap="3"><Heading size="md">Questão {questionIndex + 1}</Heading>{form.questions.length > 1 && <Button size="sm" variant="ghost" onClick={() => set("questions", form.questions.filter((_, index) => index !== questionIndex))}>Remover</Button>}</Flex><Field label="Enunciado *"><Textarea required value={question.statement} onChange={event => updateQuestion(questionIndex, current => ({ ...current, statement: event.target.value }))} /></Field><Text fontWeight="800">Alternativas</Text>{question.alternatives.map((alternative, alternativeIndex) => <Flex key={alternativeIndex} gap="3" align="center"><input aria-label={`Alternativa correta da questão ${questionIndex + 1}`} type="radio" name={`correct-${questionIndex}`} checked={alternative.is_correct} onChange={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => ({ ...item, is_correct: index === alternativeIndex })) }))} /><Input required placeholder={`Alternativa ${alternativeIndex + 1}`} value={alternative.text} onChange={event => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => index === alternativeIndex ? { ...item, text: event.target.value } : item) }))} />{question.alternatives.length > 2 && <Button variant="ghost" onClick={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.filter((_, index) => index !== alternativeIndex) }))}>×</Button>}</Flex>)}<Button variant="outline" alignSelf="start" onClick={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: [...current.alternatives, { text: "", order: current.alternatives.length + 1, is_correct: false }] }))}>Adicionar alternativa</Button></Box>)}<Button variant="outline" onClick={() => set("questions", [...form.questions, { ...emptyQuestion(), order: form.questions.length + 1 }])}>Adicionar questão</Button></>;
+    return <>
+      <Text color="gray.600">Escolha o livro e o capítulo, escreva as questões e marque uma alternativa correta por questão.</Text>
+      {editing ? <Text fontWeight="700">📚 {editing.book_title} · {editing.chapter_title}</Text> : <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">
+        <Resource resource={resources.books}>{books => books.length ? <Field label="Livro *"><select required value={form.book_id} onChange={event => { set("book_id", event.target.value); set("chapter", ""); }}><option value="">Selecione o livro</option>{books.map(book => <option key={book.id} value={book.id}>{book.title} · {book.school_year}</option>)}</select></Field> : <Empty>Cadastre um livro na aba Livros para começar.</Empty>}</Resource>
+        <Resource resource={resources.chapters}>{chapters => <Box><Field label="Capítulo *"><select required disabled={!form.book_id} value={form.chapter} onChange={event => set("chapter", event.target.value)}><option value="">{!form.book_id ? "Selecione primeiro um livro" : "Selecione o capítulo"}</option>{chapters.filter(chapter => String(chapter.book) === String(form.book_id)).map(chapter => <option key={chapter.id} value={chapter.id}>{chapter.number}. {chapter.title}</option>)}</select></Field>{form.book_id && !chapters.some(chapter => String(chapter.book) === String(form.book_id)) && <Text color="orange.700" mt="2">Este livro ainda não tem capítulos. Cadastre um na aba Capítulos.</Text>}</Box>}</Resource>
+      </SimpleGrid>}
+      <Field label="Título do desafio *" required value={form.title} onChange={event => set("title", event.target.value)} />
+      <Field label="Orientações"><Textarea value={form.description} onChange={event => set("description", event.target.value)} /></Field>
+      <Check label="Desafio ativo" checked={form.active} onChange={value => set("active", value)} />
+      {editing?.has_attempts && <Text role="status" color="orange.700">Este desafio já possui tentativas. As questões estão protegidas; você pode editar o título, as orientações e a situação.</Text>}
+      <fieldset disabled={editing?.has_attempts}><Stack gap="5">
+        {form.questions.map((question, questionIndex) => <Box className="question-editor" key={questionIndex}>
+          <Flex justify="space-between" gap="3"><Heading size="md">Questão {questionIndex + 1}</Heading>{form.questions.length > 1 && <Button type="button" size="sm" variant="ghost" onClick={() => set("questions", form.questions.filter((_, index) => index !== questionIndex))}>Remover questão</Button>}</Flex>
+          <Field label="Enunciado *"><Textarea required value={question.statement} onChange={event => updateQuestion(questionIndex, current => ({ ...current, statement: event.target.value }))} /></Field>
+          <Text fontWeight="800">Alternativas · selecione a resposta correta</Text>
+          {question.alternatives.map((alternative, alternativeIndex) => <Flex key={alternativeIndex} gap="3" align="center">
+            <input aria-label={`Marcar alternativa ${alternativeIndex + 1} como correta na questão ${questionIndex + 1}`} type="radio" name={`correct-${questionIndex}`} checked={alternative.is_correct} onChange={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => ({ ...item, is_correct: index === alternativeIndex })) }))} />
+            <Input required aria-label={`Alternativa ${alternativeIndex + 1} da questão ${questionIndex + 1}`} placeholder={`Alternativa ${alternativeIndex + 1}`} value={alternative.text} onChange={event => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => index === alternativeIndex ? { ...item, text: event.target.value } : item) }))} />
+            {question.alternatives.length > 2 && <Button type="button" variant="ghost" aria-label={`Remover alternativa ${alternativeIndex + 1}`} onClick={() => updateQuestion(questionIndex, current => {
+              const remaining = current.alternatives.filter((_, index) => index !== alternativeIndex);
+              return { ...current, alternatives: remaining.some(item => item.is_correct) ? remaining : remaining.map((item, index) => ({ ...item, is_correct: index === 0 })) };
+            })}>×</Button>}
+          </Flex>)}
+          <Button type="button" variant="outline" alignSelf="start" onClick={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: [...current.alternatives, { text: "", is_correct: false }] }))}>＋ Adicionar alternativa</Button>
+        </Box>)}
+        <Button type="button" variant="outline" onClick={() => set("questions", [...form.questions, emptyQuestion()])}>＋ Adicionar questão</Button>
+      </Stack></fieldset>
+    </>;
   }}</BasicForm>;
 }

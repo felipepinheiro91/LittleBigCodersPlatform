@@ -65,10 +65,13 @@ Usuários com `role: admin` podem usar os endpoints abaixo. Professores e estuda
 - Turmas aceitam `student_ids` e validam se professor e estudantes pertencem à escola.
 - Livros aceitam `teacher_ids`, `class_ids` e `cover` em `multipart/form-data`. Capas JPG, PNG e WebP de até 5 MB são armazenadas em `media/book_covers/`; as respostas expõem `cover_url`.
 - Provas recebem questões e alternativas aninhadas. Cada questão exige duas ou mais alternativas e exatamente uma correta.
+- `POST admin/quizzes/` também aceita `chapter` no lugar de `material`: cria o material e o desafio na mesma transação. A resposta inclui `chapter_id`, `chapter_title`, `book_title` e `has_attempts`. Não envie capítulo e material juntos. Para desafios com tentativas, use `PATCH` com título, descrição ou situação, sem reenviar questões. A edição sincroniza o título e as orientações do material.
 
 A remoção de escolas com vínculos e de registros protegidos por histórico é recusada com erro explicativo. A interface administrativa conduz o cadastro na ordem das dependências e pede confirmação antes de excluir. BookAccess e áreas pedagógicas permanecem disponíveis no Django Admin para operações avançadas.
 
 ## Cadastro e execução
+
+`admin/sequences/` oferece CRUD de sequências sugeridas pelo administrador (`teacher=null`). Aceita capítulo, título, eixo, duração, quantidade de aulas (mínimo 1), formato, situação, descrição, produto final, justificativa, objetivos, expectativas, conteúdos e atividades com título e descrição. Retorna também `book_id`, `book_title` e `chapter_title`. Cópias personalizadas dos professores não são alteradas por esse endpoint nem apagadas ao remover a sugestão.
 
 ```powershell
 .\.venv-win\Scripts\python.exe -m pip install -r requirements.txt
