@@ -63,7 +63,7 @@ Usuários com `role: admin` podem usar os endpoints abaixo. Professores e estuda
 - `GET/PUT/PATCH/DELETE admin/{recurso}/{id}/` consulta, altera ou remove um cadastro.
 - Professores e estudantes são criados com usuário, senha e perfil escolar. Na edição, senha vazia preserva a senha atual.
 - Turmas aceitam `student_ids` e validam se professor e estudantes pertencem à escola.
-- Livros aceitam `teacher_ids`, `class_ids` e `cover` em `multipart/form-data`. Capas JPG, PNG e WebP de até 5 MB são armazenadas em `media/book_covers/`; as respostas expõem `cover_url`.
+- Livros aceitam `teacher_ids`, `class_ids` e o arquivo `cover` em `multipart/form-data`. A API valida a imagem JPG, PNG ou WebP (até 5 MB) e grava uma Data URI Base64 em `Book.cover`, no banco. `cover_url` retorna essa Data URI para uso direto em `<img src>`. Omitir `cover` preserva a imagem; enviar `cover: null` em JSON remove a capa. Não há upload para S3 nem novos arquivos em `media/`.
 - Provas recebem questões e alternativas aninhadas. Cada questão exige duas ou mais alternativas e exatamente uma correta.
 - `POST admin/quizzes/` também aceita `chapter` no lugar de `material`: cria o material e o desafio na mesma transação. A resposta inclui `chapter_id`, `chapter_title`, `book_title` e `has_attempts`. Não envie capítulo e material juntos. Para desafios com tentativas, use `PATCH` com título, descrição ou situação, sem reenviar questões. A edição sincroniza o título e as orientações do material.
 

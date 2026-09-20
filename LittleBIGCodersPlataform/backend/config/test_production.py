@@ -17,9 +17,6 @@ class ProductionSettingsTests(unittest.TestCase):
             'ALLOWED_HOSTS': 'api.example.test',
             'RENDER_EXTERNAL_HOSTNAME': '',
             'CORS_ALLOWED_ORIGINS': 'https://app.example.test',
-            'AWS_STORAGE_BUCKET_NAME': 'validation-only',
-            'AWS_ACCESS_KEY_ID': 'validation-only',
-            'AWS_SECRET_ACCESS_KEY': 'validation-only',
             **overrides,
         }
         return subprocess.run(
@@ -32,17 +29,17 @@ class ProductionSettingsTests(unittest.TestCase):
             env=environment, capture_output=True, text=True,
         )
 
-    def test_production_uses_secure_database_and_persistent_storage(self):
+    def test_production_uses_secure_database_without_s3(self):
         result = self.load_settings(RENDER_EXTERNAL_HOSTNAME='service.onrender.com')
         self.assertEqual(result.returncode, 0, result.stderr)
         settings = json.loads(result.stdout)
         self.assertFalse(settings['debug'])
         self.assertEqual(settings['ssl'], 'require')
         self.assertIn('service.onrender.com', settings['hosts'])
-        self.assertEqual(settings['storage'], 'storages.backends.s3.S3Storage')
+        self.assertEqual(settings['storage'], 'django.core.files.storage.FileSystemStorage')
 
-    def test_required_secrets_and_storage_fail_closed(self):
-        for name in ['SECRET_KEY', 'DATABASE_URL', 'AWS_STORAGE_BUCKET_NAME', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY']:
+    def test_required_secrets_fail_closed(self):
+        for name in ['SECRET_KEY', 'DATABASE_URL']:
             with self.subTest(name=name):
                 result = self.load_settings(**{name: ''})
                 self.assertNotEqual(result.returncode, 0)

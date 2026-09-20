@@ -23,7 +23,7 @@ A API Django é esperada em `http://127.0.0.1:8000/api` por padrão. Para outro 
 - Administrador: painel abre em Livros, com abas para capítulos, desafios, materiais e cadastros escolares. Permite criar, pesquisar, editar e remover registros.
 - Para criar conteúdo: cadastre o livro (com capa opcional), adicione capítulos e abra Desafios. Escolha livro e capítulo, escreva questões e alternativas e marque uma resposta correta por questão. O material de prova é criado automaticamente, sem cadastro intermediário. Desafios com tentativas permitem alterar título, orientações e situação, preservando as questões.
 - A Visão Geral do administrador apresenta indicadores globais, operação por escola, desempenho por livro e evolução mensal.
-- O cadastro de livro aceita capa JPG, PNG ou WebP de até 5 MB; a imagem aparece nas listagens para administradores, professores e estudantes.
+- O cadastro de livro aceita capa JPG, PNG ou WebP de até 5 MB; a API converte para Base64 e salva no banco. A Data URI retornada em `cover_url` aparece nas listagens para administradores, professores e estudantes, sem serviço externo de imagens.
 - Todas as consultas têm carregamento, erro com nova tentativa e estado vazio. Mudanças de filtros cancelam consultas antigas.
 
 Contas sem livros ou provas cadastrados mostram estados vazios, não exemplos. O cadastro e os vínculos de livros, turmas, estudantes e materiais são gerenciados pelo backend/admin. Não há cadastro público nem botão de login demonstrativo.

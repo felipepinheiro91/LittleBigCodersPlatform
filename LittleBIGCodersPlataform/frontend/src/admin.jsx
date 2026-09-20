@@ -95,6 +95,8 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
     event.preventDefault(); setBusy(true); setError(""); setMessage("");
     try {
       let body = { ...form };
+      delete body.cover_url;
+      delete body.cover_file;
       if (endpoint === "admin/quizzes/") {
         if (editing?.has_attempts) delete body.questions;
         else body.questions = form.questions.map((question, index) => ({

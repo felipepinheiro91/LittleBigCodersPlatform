@@ -14,7 +14,7 @@ class BookSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'school_year', 'edition', 'description', 'cover_url', 'active', 'accessible', 'progress', 'access']
 
     def get_cover_url(self, obj):
-        return self.context['request'].build_absolute_uri(obj.cover.url) if obj.cover else None
+        return obj.cover or None
 
     def get_accessible(self, obj):
         return visible_books(self.context['request'].user).filter(pk=obj.pk).exists()

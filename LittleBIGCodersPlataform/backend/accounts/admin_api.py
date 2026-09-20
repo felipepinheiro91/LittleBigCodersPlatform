@@ -1,3 +1,5 @@
+import base64
+
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from rest_framework import permissions, serializers, viewsets
@@ -189,7 +191,7 @@ class AdminClassSerializer(serializers.ModelSerializer):
 class AdminBookSerializer(serializers.ModelSerializer):
     teacher_ids = serializers.PrimaryKeyRelatedField(source='teachers', queryset=Teacher.objects.all(), many=True, required=False)
     class_ids = serializers.PrimaryKeyRelatedField(source='classes', queryset=Class.objects.all(), many=True, required=False)
-    cover = serializers.FileField(required=False, allow_null=True, write_only=True)
+    cover = serializers.ImageField(required=False, allow_null=True, write_only=True)
     cover_url = serializers.SerializerMethodField()
 
     class Meta:
@@ -197,18 +199,19 @@ class AdminBookSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'school_year', 'edition', 'description', 'cover', 'cover_url', 'active', 'teacher_ids', 'class_ids']
 
     def get_cover_url(self, obj):
-        request = self.context.get('request')
-        return request.build_absolute_uri(obj.cover.url) if obj.cover and request else None
+        return obj.cover or None
 
     def validate_cover(self, cover):
         if cover is None:
-            return cover
+            return ''
         if cover.size > 5 * 1024 * 1024:
             raise serializers.ValidationError('A capa deve ter no máximo 5 MB.')
         content_type = getattr(cover, 'content_type', '')
         if content_type not in ['image/jpeg', 'image/png', 'image/webp']:
             raise serializers.ValidationError('Envie uma imagem JPG, PNG ou WebP.')
-        return cover
+        cover.seek(0)
+        encoded = base64.b64encode(cover.read()).decode('ascii')
+        return f'data:{content_type};base64,{encoded}'
 
 
 class AdminChapterSerializer(serializers.ModelSerializer):

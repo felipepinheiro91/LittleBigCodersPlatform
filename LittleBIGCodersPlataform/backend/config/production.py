@@ -49,17 +49,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STORAGES = {
     'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
-    'default': {
-        'BACKEND': 'storages.backends.s3.S3Storage',
-        'OPTIONS': {
-            'bucket_name': required_env('AWS_STORAGE_BUCKET_NAME'),
-            'access_key': required_env('AWS_ACCESS_KEY_ID'),
-            'secret_key': required_env('AWS_SECRET_ACCESS_KEY'),
-            'region_name': os.environ.get('AWS_S3_REGION_NAME', 'us-east-1'),
-            'endpoint_url': os.environ.get('AWS_S3_ENDPOINT_URL') or None,
-            'default_acl': None,
-            'querystring_auth': True,
-            'file_overwrite': False,
-        },
-    },
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
 }

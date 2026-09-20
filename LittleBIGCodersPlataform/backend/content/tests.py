@@ -1,4 +1,8 @@
 from datetime import timedelta
+import base64
+from io import BytesIO
+from django.core.files.uploadedfile import SimpleUploadedFile
+from PIL import Image
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.test import APITestCase
@@ -8,6 +12,36 @@ from quizzes.models import Quiz, Question, Alternative, Attempt
 
 
 class PlatformTests(APITestCase):
+    def test_cover_upload_is_stored_in_database_and_can_be_removed(self):
+        self.authenticate_admin()
+        buffer = BytesIO()
+        Image.new('RGB', (2, 2), 'purple').save(buffer, format='PNG')
+        contents = buffer.getvalue()
+        response = self.client.post('/api/admin/books/', {
+            'title': 'Livro com capa', 'school_year': '6',
+            'cover': SimpleUploadedFile('cover.png', contents, content_type='image/png'),
+        }, format='multipart')
+        self.assertEqual(response.status_code, 201, response.data)
+        book = Book.objects.get(pk=response.data['id'])
+        self.assertEqual(book.cover, 'data:image/png;base64,' + base64.b64encode(contents).decode('ascii'))
+        self.assertEqual(response.data['cover_url'], book.cover)
+        self.assertEqual(self.client.get(f'/api/books/{book.pk}/').data['cover_url'], book.cover)
+        endpoint = f'/api/admin/books/{book.pk}/'
+        self.assertEqual(self.client.patch(endpoint, {'title': 'Editado'}, format='json').data['cover_url'], book.cover)
+        response = self.client.patch(endpoint, {'cover': None}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.data['cover_url'])
+        book.refresh_from_db()
+        self.assertEqual(book.cover, '')
+
+    def test_cover_rejects_fake_image(self):
+        self.authenticate_admin()
+        response = self.client.post('/api/admin/books/', {
+            'title': 'Inválido', 'school_year': '6',
+            'cover': SimpleUploadedFile('fake.png', b'not an image', content_type='image/png'),
+        }, format='multipart')
+        self.assertEqual(response.status_code, 400)
+
     def setUp(self):
         self.school = School.objects.create(name='Escola A')
         self.other_school = School.objects.create(name='Escola B')
