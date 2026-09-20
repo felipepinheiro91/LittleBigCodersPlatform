@@ -2,6 +2,7 @@ services:
   - type: web
     name: littlebigcoders-api
     runtime: python
+    plan: free
     rootDir: LittleBIGCodersPlataform/backend
     buildCommand: pip install -r requirements-production.txt && python manage.py collectstatic --noinput
     startCommand: python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --access-logfile -
