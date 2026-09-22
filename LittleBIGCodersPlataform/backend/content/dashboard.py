@@ -1,5 +1,5 @@
 from datetime import timedelta
-from django.db.models import Sum
+from django.db.models import Sum, Q, F
 from django.db.models.functions import TruncMonth
 from django.utils import timezone
 from rest_framework.views import APIView
@@ -41,7 +41,7 @@ class DashboardView(APIView):
                 })
             book_rows = []
             for book in Book.objects.all().order_by('title'):
-                book_students = list(Student.objects.filter(book_accesses__book=book).distinct())
+                book_students = list(Student.objects.filter(Q(book_accesses__book=book) | Q(class_enrollments__class_group__book_accesses__book=book, school_id=F('class_enrollments__class_group__school_id'))).distinct())
                 book_rows.append({'id': book.pk, 'title': book.title, **summarize(book_students, quizzes.filter(material__chapter__book=book))})
             return Response({
                 'role': 'admin',

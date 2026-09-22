@@ -12,6 +12,50 @@ from quizzes.models import Quiz, Question, Alternative, Attempt
 
 
 class PlatformTests(APITestCase):
+    def test_class_book_access_lifecycle(self):
+        from .access import visible_books
+        from .reports import summarize
+        self.access.delete()
+        self.authenticate_admin()
+        endpoint = '/api/admin/class-book-accesses/'
+        today = timezone.localdate()
+        payload = {'class_group': self.group.pk, 'book': self.book.pk, 'valid_from': str(today), 'valid_until': str(today + timedelta(days=30)), 'active': True}
+        response = self.client.post(endpoint, payload, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        detail = f"{endpoint}{response.data['id']}/"
+        self.assertTrue(visible_books(self.user).filter(pk=self.book.pk).exists())
+        self.assertFalse(visible_books(self.other_user).exists())
+        self.assertEqual(summarize([self.student], Quiz.objects.all())['proposed'], 1)
+        self.assertEqual(self.client.post(endpoint, payload, format='json').status_code, 400)
+        self.assertEqual(self.client.patch(detail, {'valid_until': str(today - timedelta(days=1))}, format='json').status_code, 400)
+        self.client.patch(detail, {'active': False}, format='json')
+        self.assertFalse(visible_books(self.user).exists())
+        self.client.patch(detail, {'active': True}, format='json')
+        self.group.enrollments.all().delete()
+        self.assertFalse(visible_books(self.user).exists())
+        ClassStudent.objects.create(class_group=self.group, student=self.student)
+        self.assertTrue(visible_books(self.user).exists())
+        self.client.force_authenticate(self.user)
+        self.assertEqual(len(self.client.get(f'/api/books/{self.book.pk}/').data['access']), 1)
+        self.assertEqual(self.client.get(endpoint).status_code, 403)
+        self.assertEqual(self.client.post(endpoint, payload, format='json').status_code, 403)
+        self.client.force_authenticate(self.teacher_user)
+        self.assertEqual(self.client.delete(detail).status_code, 403)
+        self.client.force_authenticate(User.objects.get(login='admin'))
+        self.client.patch(detail, {'valid_from': str(today + timedelta(days=1))}, format='json')
+        self.assertFalse(visible_books(self.user).exists())
+        self.client.patch(detail, {'valid_from': str(today - timedelta(days=2)), 'valid_until': str(today - timedelta(days=1))}, format='json')
+        self.assertFalse(visible_books(self.user).exists())
+        self.client.patch(detail, payload, format='json')
+        self.book.active = False
+        self.book.save()
+        self.assertFalse(visible_books(self.user).exists())
+        self.book.active = True
+        self.book.save()
+        BookAccess.objects.create(student=self.student, book=self.book, login_code='independent', valid_from=today, valid_until=today)
+        self.assertEqual(self.client.delete(detail).status_code, 204)
+        self.assertTrue(visible_books(self.user).exists())
+
     def test_cover_upload_is_stored_in_database_and_can_be_removed(self):
         self.authenticate_admin()
         buffer = BytesIO()

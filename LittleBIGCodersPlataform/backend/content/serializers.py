@@ -26,7 +26,11 @@ class BookSerializer(serializers.ModelSerializer):
 
     def get_access(self, obj):
         student = getattr(self.context['request'].user, 'student_profile', None)
-        return list(obj.accesses.filter(student=student).values('valid_from', 'valid_until', 'active')) if student else []
+        if not student:
+            return []
+        individual = obj.accesses.filter(student=student).values('valid_from', 'valid_until', 'active')
+        groups = obj.class_accesses.filter(class_group__enrollments__student=student, class_group__school_id=student.school_id).values('valid_from', 'valid_until', 'active')
+        return list(individual) + list(groups)
 
 
 class ChapterSerializer(serializers.ModelSerializer):

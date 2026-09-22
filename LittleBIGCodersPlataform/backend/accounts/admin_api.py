@@ -1,10 +1,11 @@
 import base64
 
 from django.db import transaction
+from django.utils import timezone
 from django.db.models.deletion import ProtectedError
 from rest_framework import permissions, serializers, viewsets
 
-from content.models import Book, Chapter, Material, DidacticSequence
+from content.models import Book, Chapter, Material, DidacticSequence, ClassBookAccess
 from content.serializers import SequenceSerializer
 from quizzes.models import Alternative, Question, Quiz
 from .models import Class, ClassStudent, School, Student, Teacher, User
@@ -212,6 +213,40 @@ class AdminBookSerializer(serializers.ModelSerializer):
         cover.seek(0)
         encoded = base64.b64encode(cover.read()).decode('ascii')
         return f'data:{content_type};base64,{encoded}'
+
+
+class AdminClassBookAccessSerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()
+    school_name = serializers.CharField(source='class_group.school.name', read_only=True)
+    students_count = serializers.IntegerField(source='class_group.enrollments.count', read_only=True)
+
+    class Meta:
+        model = ClassBookAccess
+        fields = ['id', 'class_group', 'book', 'valid_from', 'valid_until', 'active', 'title', 'school_name', 'students_count']
+
+    def get_title(self, obj):
+        status = 'Ativo' if obj.active else 'Inativo'
+        if obj.active:
+            today = timezone.localdate()
+            if obj.valid_until < today:
+                status = 'Expirado'
+            elif obj.valid_from > today:
+                status = 'Agendado'
+            elif not obj.book.active:
+                status = 'Livro inativo'
+        return f'{obj.class_group} · {obj.book.title} · {status} · {obj.valid_from:%d/%m/%Y} a {obj.valid_until:%d/%m/%Y}'
+
+    def validate(self, attrs):
+        start = attrs.get('valid_from', getattr(self.instance, 'valid_from', None))
+        end = attrs.get('valid_until', getattr(self.instance, 'valid_until', None))
+        if start and end and end < start:
+            raise serializers.ValidationError({'valid_until': 'A data final deve ser igual ou posterior à inicial.'})
+        return attrs
+
+
+class ClassBookAccessAdminViewSet(AdminModelViewSet):
+    queryset = ClassBookAccess.objects.select_related('class_group__school', 'book').prefetch_related('class_group__enrollments').order_by('class_group__school__name', 'class_group__name', 'book__title')
+    serializer_class = AdminClassBookAccessSerializer
 
 
 class AdminChapterSerializer(serializers.ModelSerializer):

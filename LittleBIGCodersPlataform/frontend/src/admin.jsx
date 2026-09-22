@@ -5,6 +5,7 @@ import { SequenceForm } from "./sequences";
 
 const sections = [
   ["books", "📚", "Livros", "Cadastre capas e organize sua coleção"],
+  ["class-book-accesses", "🔑", "Acessos aos livros", "Libere livros para as turmas"],
   ["chapters", "📖", "Capítulos", "Estruture o conteúdo de cada livro"],
   ["sequences", "📝", "Sequências didáticas", "Planejamentos sugeridos por capítulo"],
   ["quizzes", "🧩", "Desafios", "Crie questões e marque as respostas corretas"],
@@ -25,6 +26,7 @@ export function AdminPanel() {
   const [error, setError] = useState("");
   const resources = {
     books: useResource("admin/books/"),
+    "class-book-accesses": useResource("admin/class-book-accesses/"),
     chapters: useResource("admin/chapters/"),
     sequences: useResource("admin/sequences/"),
     quizzes: useResource("admin/quizzes/"),
@@ -59,6 +61,7 @@ function AdminBars({ title, rows }) {
 function CreateSection({ section, resources, onCreated, editing = null, onCancel }) {
   const labels = Object.fromEntries(sections.map(([key, icon, label]) => [key, `${icon} Novo cadastro · ${label}`]));
   const defaults = {
+    "class-book-accesses": { class_group: "", book: "", valid_from: "", valid_until: "", active: true },
     schools: { name: "", city: "", state: "" },
     teachers: { name: "", login: "", email: "", password: "", school: "" },
     students: { name: "", login: "", email: "", password: "", school: "", grade: "", is_individual_customer: false },
@@ -125,6 +128,14 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
 function Fields({ section, form, set, resources, editing }) {
   const input = (field, label, props = {}) => <Field label={label} required={props.required} {...props} value={form[field]} onChange={event => set(field, event.target.value)} />;
   const select = (field, label, resource, placeholder, filter = () => true) => <Resource resource={resources[resource]}>{items => <Field label={label}><select required value={form[field]} onChange={event => set(field, event.target.value)}><option value="">{placeholder}</option>{items.filter(filter).map(item => <option key={item.id} value={item.id}>{item.name ?? item.title}</option>)}</select></Field>}</Resource>;
+  if (section === "class-book-accesses") return <>
+    <Text color="gray.600">O livro ficará disponível para todos os alunos matriculados na turma durante a validade. Novos alunos recebem acesso automaticamente; quem sair da turma perde este vínculo. Acessos individuais ou por outras turmas são preservados.</Text>
+    <Resource resource={resources.classes}>{groups => <Field label="Turma *"><select required value={form.class_group} onChange={event => set("class_group", event.target.value)}><option value="">Selecione a turma</option>{groups.map(group => <option key={group.id} value={group.id}>{group.name} · {group.year} · {group.school_name} ({group.students_count} alunos)</option>)}</select></Field>}</Resource>
+    {select("book", "Livro *", "books", "Selecione o livro")}
+    <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("valid_from", "Início da validade *", { type: "date", required: true })}{input("valid_until", "Fim da validade *", { type: "date", required: true, min: form.valid_from || undefined })}</SimpleGrid>
+    <Check label="Acesso ativo" checked={form.active} onChange={value => set("active", value)} />
+    <Text fontSize="sm" color="gray.600">O livro também precisa estar ativo. Para renovar, edite o acesso existente. Desativar ou remover este vínculo não apaga as respostas dos alunos.</Text>
+  </>;
   if (section === "schools") return <SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("name", "Nome da escola *", { required: true })}{input("city", "Cidade")}{input("state", "UF", { maxLength: 2 })}</SimpleGrid>;
   if (section === "teachers" || section === "students") return <><SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("name", "Nome completo *", { required: true })}{input("login", "Login *", { required: true })}{input("email", "E-mail", { type: "email" })}{input("password", editing ? "Nova senha (deixe vazio para manter)" : "Senha inicial *", { required: !editing, type: "password", minLength: 8 })}{select("school", "Escola *", "schools", "Selecione a escola")}{section === "students" && input("grade", "Ano/série")}</SimpleGrid>{section === "students" && <Check label="Cliente individual" checked={form.is_individual_customer} onChange={value => set("is_individual_customer", value)} />}</>;
   if (section === "classes") return <><SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("name", "Nome da turma *", { required: true })}{input("year", "Ano letivo *", { required: true, type: "number", min: 2000 })}{select("school", "Escola *", "schools", "Selecione a escola")}{select("teacher", "Professor *", "teachers", "Selecione o professor", item => !form.school || String(item.school) === String(form.school))}</SimpleGrid><Multi label="Estudantes da turma" items={resources.students.data ?? []} value={form.student_ids} onChange={value => set("student_ids", value)} filter={item => !form.school || String(item.school) === String(form.school)} /></>;

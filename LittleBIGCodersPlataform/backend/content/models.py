@@ -27,6 +27,20 @@ class BookAccess(models.Model):
         constraints = [models.CheckConstraint(condition=models.Q(valid_until__gte=models.F('valid_from')), name='access_valid_dates')]
 
 
+class ClassBookAccess(models.Model):
+    class_group = models.ForeignKey('accounts.Class', on_delete=models.CASCADE, related_name='book_accesses')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='class_accesses')
+    valid_from = models.DateField()
+    valid_until = models.DateField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['class_group', 'book'], name='unique_class_book_access'),
+            models.CheckConstraint(condition=models.Q(valid_until__gte=models.F('valid_from')), name='class_access_valid_dates'),
+        ]
+
+
 class Chapter(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='chapters')
     title = models.CharField(max_length=255)

@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.utils import timezone
-from .models import Book
+from .models import Book, ClassBookAccess
 from rest_framework.exceptions import ValidationError
 
 
@@ -19,13 +19,15 @@ def visible_books(user, current=True):
         return books
     if user.role == 'teacher' and hasattr(user, 'teacher_profile'):
         teacher = user.teacher_profile
-        return books.filter(Q(teachers=teacher) | Q(classes__teacher=teacher, classes__school_id=teacher.school_id)).distinct()
+        return books.filter(Q(teachers=teacher) | Q(classes__teacher=teacher, classes__school_id=teacher.school_id) | Q(class_accesses__class_group__teacher=teacher, class_accesses__class_group__school_id=teacher.school_id)).distinct()
     if user.role == 'student' and hasattr(user, 'student_profile'):
         grants = user.student_profile.book_accesses.all()
+        class_grants = ClassBookAccess.objects.filter(class_group__enrollments__student=user.student_profile, class_group__school_id=user.student_profile.school_id)
         if current:
             today = timezone.localdate()
             grants = grants.filter(active=True, valid_from__lte=today, valid_until__gte=today, book__active=True)
-        return books.filter(id__in=grants.values('book_id')).distinct()
+            class_grants = class_grants.filter(active=True, valid_from__lte=today, valid_until__gte=today, book__active=True)
+        return books.filter(Q(id__in=grants.values('book_id')) | Q(id__in=class_grants.values('book_id'))).distinct()
     return books.none()
 
 

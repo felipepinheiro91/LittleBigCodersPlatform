@@ -1,5 +1,6 @@
 from django.db.models import Sum
-from content.models import KnowledgeArea, BookAccess
+from content.models import KnowledgeArea
+from content.access import visible_books
 from quizzes.models import Attempt, Answer, Quiz
 from .models import StudentBadge
 
@@ -18,7 +19,7 @@ def level_for(percentage):
 
 def achievement_stats(student, book=None):
     attempts = Attempt.objects.filter(student=student, completed=True)
-    assigned = BookAccess.objects.filter(student=student).values('book_id')
+    assigned = visible_books(student.user, current=False).values('id')
     quizzes = Quiz.objects.filter(material__chapter__book_id__in=assigned, active=True, material__teacher_only=False).exclude(material__type='answer_key')
     if book:
         attempts = attempts.filter(quiz__material__chapter__book_id=book)

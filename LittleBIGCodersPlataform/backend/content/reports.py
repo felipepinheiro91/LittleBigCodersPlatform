@@ -12,7 +12,7 @@ from .models import Chapter
 def summarize(students, quizzes):
     attempts = Attempt.objects.filter(student__in=students, quiz__in=quizzes, completed=True)
     totals = attempts.aggregate(correct=Sum('score'), total=Sum('total_questions'))
-    proposed = sum(quizzes.filter(material__chapter__book__accesses__student=student).distinct().count() for student in students)
+    proposed = sum(quizzes.filter(material__chapter__book__in=visible_books(student.user, current=False)).distinct().count() for student in students)
     completed = attempts.values('student_id', 'quiz_id').distinct().count()
     return {
         'students': len(students), 'proposed': proposed, 'completed': completed,
