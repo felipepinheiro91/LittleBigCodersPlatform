@@ -1,6 +1,6 @@
 # Reprodução de vídeos
 
-Materiais do tipo vídeo abrem em um diálogo na própria página, sem link externo na interface. Fechar o diálogo desmonta o player e interrompe a reprodução. Os outros tipos de materiais mantêm o comportamento anterior.
+Materiais com URLs de vídeo reconhecidas abrem em um diálogo na própria página, independentemente do tipo cadastrado (inclusive jogos e leituras), sem link externo na interface. Materiais do tipo vídeo sempre usam o diálogo, com orientação de erro quando o endereço não é suportado. Fechar o diálogo desmonta o player e interrompe a reprodução. Links que não são de vídeo, nos demais tipos, mantêm o comportamento anterior.
 
 Formatos aceitos: links do YouTube (watch, youtu.be, embed, shorts e live), Vimeo (incluindo o hash de vídeos não listados) e arquivos MP4, WebM, OGV/OGG. Outros endereços exibem uma orientação para contatar o professor, sem abrir outra aba. O provedor precisa permitir incorporação; arquivos dependem de codecs compatíveis com o navegador.
 
