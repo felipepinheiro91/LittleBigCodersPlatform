@@ -67,3 +67,26 @@ class SharedResourceTests(APITestCase):
         self.assertCountEqual(material.data['chapters'], [self.chapter.pk, second.pk])
         payload['chapters'] = [999999]
         self.assertEqual(self.client.post('/api/admin/quizzes/', payload, format='json').status_code, 400)
+
+    def test_independent_resources_linked_from_chapter_and_edits_preserve_links(self):
+        self.authenticate_admin()
+        payload = self.challenge_payload()
+        del payload['chapter']
+        payload['chapters'] = []
+        challenge = self.client.post('/api/admin/quizzes/', payload, format='json')
+        self.assertEqual(challenge.status_code, 201, challenge.data)
+        material = self.client.post('/api/admin/materials/', {'title': 'Leitura', 'type': 'text', 'chapters': []}, format='json')
+        self.assertEqual(material.status_code, 201, material.data)
+        self.assertEqual(challenge.data['chapters'], [])
+        self.assertEqual(material.data['chapters'], [])
+        links = [challenge.data['material'], material.data['id']]
+        response = self.client.patch(f'/api/admin/chapters/{self.chapter.pk}/', {'material_ids': links}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        response = self.client.put(f"/api/admin/materials/{material.data['id']}/", {'title': 'Leitura editada', 'type': 'text'}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['chapters'], [self.chapter.pk])
+        del payload['chapters']
+        payload['title'] = 'Desafio editado'
+        response = self.client.patch(f"/api/admin/quizzes/{challenge.data['id']}/", payload, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['chapters'], [self.chapter.pk])

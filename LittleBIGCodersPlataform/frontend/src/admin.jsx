@@ -41,7 +41,7 @@ export function AdminPanel() {
   function chooseSection(key) { setSection(key); setEditing(null); setSearch(""); setNotice(""); setError(""); }
   async function remove(item) {
     const label = item.name ?? item.title;
-    const warning = ["materials", "quizzes"].includes(section) ? " O recurso será removido de todos os capítulos que o utilizam. Para desvincular apenas um capítulo, edite os vínculos." : "";
+    const warning = ["materials", "quizzes"].includes(section) ? " O recurso será removido de todos os capítulos que o utilizam. Para desvincular apenas um capítulo, edite-o na aba Capítulos." : "";
     if (!window.confirm(`Remover “${label}”? Esta ação não pode ser desfeita.${warning}`)) return;
     setError(""); setNotice("");
     try { await api.request(`admin/${section}/${item.id}/`, { method: "DELETE" }); setEditing(null); setNotice(`${label} foi removido.`); reloadAll(); }
@@ -101,6 +101,7 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
       let body = { ...form };
       delete body.cover_url;
       delete body.cover_file;
+      if (editing && ["admin/materials/", "admin/quizzes/"].includes(endpoint)) delete body.chapters;
       if (endpoint === "admin/quizzes/") {
         if (editing?.has_attempts) delete body.questions;
         else body.questions = form.questions.map((question, index) => ({
@@ -142,16 +143,9 @@ function Fields({ section, form, set, resources, editing }) {
   if (section === "classes") return <><SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("name", "Nome da turma *", { required: true })}{input("year", "Ano letivo *", { required: true, type: "number", min: 2000 })}{select("school", "Escola *", "schools", "Selecione a escola")}{select("teacher", "Professor *", "teachers", "Selecione o professor", item => !form.school || String(item.school) === String(form.school))}</SimpleGrid><Multi label="Estudantes da turma" items={resources.students.data ?? []} value={form.student_ids} onChange={value => set("student_ids", value)} filter={item => !form.school || String(item.school) === String(form.school)} /></>;
   if (section === "books") return <>{input("title", "Título do livro *", { required: true })}<SimpleGrid columns={{ base: 1, md: 2 }} gap="4">{input("school_year", "Ano escolar *", { required: true })}{input("edition", "Edição")}</SimpleGrid><Field label="Descrição"><Textarea value={form.description} onChange={event => set("description", event.target.value)} /></Field><Field label="Imagem da capa (JPG, PNG ou WebP · até 5 MB)"><Input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => set("cover_file", event.target.files?.[0] ?? null)} /></Field>{form.cover_url && <img className="admin-cover-preview" src={form.cover_url} alt={`Capa atual de ${form.title}`} />}<SimpleGrid columns={{ base: 1, md: 2 }} gap="4"><Multi label="Professores com acesso" items={resources.teachers.data ?? []} value={form.teacher_ids} onChange={value => set("teacher_ids", value)} /><Multi label="Turmas que usarão o livro" items={resources.classes.data ?? []} value={form.class_ids} onChange={value => set("class_ids", value)} /></SimpleGrid><Check label="Livro ativo" checked={form.active} onChange={value => set("active", value)} /></>;
   if (section === "chapters") return <><Resource resource={resources.materials}>{materials => <><Multi label="Materiais e desafios deste capítulo" items={materials.map(material => ({ ...material, title: `${material.type === "quiz" ? "🧩" : "📎"} ${material.title}` }))} value={form.material_ids} onChange={value => set("material_ids", value)} /><Text fontSize="sm" color="gray.600">Selecione recursos existentes. Desmarcar remove somente o vínculo com este capítulo.</Text></>}</Resource>{select("book", "Livro *", "books", "Selecione o livro")}<SimpleGrid columns={{ base: 1, md: 3 }} gap="4"><Box>{input("number", "Número *", { required: true, type: "number", min: 1 })}</Box><Box gridColumn={{ md: "span 2" }}>{input("title", "Título do capítulo *", { required: true })}</Box></SimpleGrid><Field label="Descrição"><Textarea value={form.description} onChange={event => set("description", event.target.value)} /></Field></>;
-  return <><ChapterLinks resources={resources} value={form.chapters} onChange={value => set("chapters", value)} />{input("title", "Título do material *", { required: true })}<SimpleGrid columns={{ base: 1, md: 2 }} gap="4"><Field label="Tipo"><select value={form.type} onChange={event => set("type", event.target.value)}><option value="text">Leitura</option><option value="video">Vídeo</option><option value="game">Jogo</option><option value="quiz">Prova</option><option value="answer_key">Gabarito</option></select></Field>{input("url", "URL do recurso", { type: "url" })}</SimpleGrid><Field label="Conteúdo / orientações"><Textarea minH="150px" value={form.content} onChange={event => set("content", event.target.value)} /></Field><Check label="Visível somente para professores" checked={form.teacher_only} onChange={value => set("teacher_only", value)} /></>;
+  return <><Text color="gray.600">Cadastre o recurso aqui. Para utilizá-lo, vincule-o depois na aba Capítulos. Alterações no conteúdo valem para todos os capítulos que o utilizam.</Text>{input("title", "Título do material *", { required: true })}<SimpleGrid columns={{ base: 1, md: 2 }} gap="4"><Field label="Tipo"><select value={form.type} onChange={event => set("type", event.target.value)}><option value="text">Leitura</option><option value="video">Vídeo</option><option value="game">Jogo</option><option value="quiz">Prova</option><option value="answer_key">Gabarito</option></select></Field>{input("url", "URL do recurso", { type: "url" })}</SimpleGrid><Field label="Conteúdo / orientações"><Textarea minH="150px" value={form.content} onChange={event => set("content", event.target.value)} /></Field><Check label="Visível somente para professores" checked={form.teacher_only} onChange={value => set("teacher_only", value)} /></>;
 }
 
-
-function ChapterLinks({ resources, value = [], onChange }) {
-  return <Resource resource={resources.chapters}>{chapters => <Stack gap="3">
-    <Multi label="Capítulos que utilizam este recurso" items={chapters.map(chapter => ({ id: chapter.id, title: `${chapter.book_title} · ${chapter.number}. ${chapter.title}` }))} value={value} onChange={onChange} />
-    <Text fontSize="sm" color="gray.600">Selecione capítulos de um ou vários livros. Sem seleção, o recurso fica salvo no banco de recursos, sem acesso pelos alunos. Alterações no conteúdo valem para todos os capítulos vinculados.</Text>
-  </Stack>}</Resource>;
-}
 
 function Multi({ label, items, value, onChange, filter = () => true }) {
   return <Field label={`${label} (Ctrl para selecionar vários)`}><select multiple size="6" value={value.map(String)} onChange={event => onChange([...event.target.selectedOptions].map(option => Number(option.value)))}>{items.filter(filter).map(item => <option key={item.id} value={item.id}>{item.name ?? item.title}{item.school_name ? ` · ${item.school_name}` : ""}</option>)}</select></Field>;
@@ -166,11 +160,11 @@ function QuizForm({ resources, onCreated, editing, onCancel }) {
   return <BasicForm key={editing?.id ?? "new-quiz"} title={editing ? `✏️ Editar desafio · ${editing.title}` : "🧩 Novo desafio"} endpoint="admin/quizzes/" initial={initial} editing={editing} onCreated={onCreated} onCancel={onCancel}>{({ form, set }) => {
     const updateQuestion = (index, updater) => set("questions", form.questions.map((question, position) => position === index ? updater(question) : question));
     return <>
-      <ChapterLinks resources={resources} value={form.chapters} onChange={value => set("chapters", value)} />
+      <Text color="gray.600">Cadastre o recurso aqui. Para utilizá-lo, vincule-o depois na aba Capítulos. Alterações no conteúdo valem para todos os capítulos que o utilizam.</Text>
       <Field label="Título do desafio *" required value={form.title} onChange={event => set("title", event.target.value)} />
       <Field label="Orientações"><Textarea value={form.description} onChange={event => set("description", event.target.value)} /></Field>
       <Check label="Desafio ativo" checked={form.active} onChange={value => set("active", value)} />
-      {editing?.has_attempts && <Text role="status" color="orange.700">Este desafio já possui tentativas. As questões estão protegidas; você pode editar os vínculos, o título, as orientações e a situação.</Text>}
+      {editing?.has_attempts && <Text role="status" color="orange.700">Este desafio já possui tentativas. As questões estão protegidas; você pode editar o título, as orientações e a situação. Gerencie os vínculos na aba Capítulos.</Text>}
       <fieldset disabled={editing?.has_attempts}><Stack gap="5">
         {form.questions.map((question, questionIndex) => <Box className="question-editor" key={questionIndex}>
           <Flex justify="space-between" gap="3"><Heading size="md">Questão {questionIndex + 1}</Heading>{form.questions.length > 1 && <Button type="button" size="sm" variant="ghost" onClick={() => set("questions", form.questions.filter((_, index) => index !== questionIndex))}>Remover questão</Button>}</Flex>

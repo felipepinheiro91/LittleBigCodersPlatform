@@ -6,8 +6,8 @@ A tabela associativa `content_material_chapters` armazena cada par material/cap�
 
 ## Painel e API
 
-- Em Materiais ou Desafios, selecione vários capítulos, inclusive de livros diferentes. A lista informa o livro e o número do capítulo.
-- Em Capítulos, selecione materiais e desafios já cadastrados. Desmarcar remove somente o vínculo.
+- Em Materiais ou Desafios, cadastre recursos independentes, sem selecionar capítulos. Editar o conteúdo nessas telas preserva os vínculos existentes.
+- Somente na tela Capítulos, selecione materiais e desafios já cadastrados. O mesmo recurso pode ser selecionado em capítulos de livros diferentes. Desmarcar remove somente o vínculo.
 - É possível manter recursos sem capítulos no banco de recursos; não ficam disponíveis para alunos.
 - Alterar um conteúdo compartilhado altera todas as suas aparições. Excluir um capítulo não exclui seus recursos. Excluir um recurso é global e continua sujeito às proteções de histórico.
 - `admin/materials/` e `admin/quizzes/` recebem e retornam `chapters: [id, ...]`. O campo legado `chapter` continua aceito na escrita como uma lista de um elemento, mas não pode ser enviado junto com `chapters`.
