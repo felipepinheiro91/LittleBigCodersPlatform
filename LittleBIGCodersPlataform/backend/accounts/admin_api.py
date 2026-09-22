@@ -250,19 +250,31 @@ class ClassBookAccessAdminViewSet(AdminModelViewSet):
 
 
 class AdminChapterSerializer(serializers.ModelSerializer):
+    material_ids = serializers.PrimaryKeyRelatedField(source='materials', queryset=Material.objects.all(), many=True, required=False)
     book_title = serializers.CharField(source='book.title', read_only=True)
 
     class Meta:
         model = Chapter
-        fields = ['id', 'book', 'book_title', 'number', 'title', 'description']
+        fields = ['id', 'book', 'book_title', 'number', 'title', 'description', 'material_ids']
 
 
 class AdminMaterialSerializer(serializers.ModelSerializer):
-    chapter_title = serializers.CharField(source='chapter.title', read_only=True)
+    chapter = serializers.PrimaryKeyRelatedField(queryset=Chapter.objects.all(), write_only=True, required=False)
+    chapters = serializers.PrimaryKeyRelatedField(queryset=Chapter.objects.all(), many=True, required=False)
+
+    def validate(self, attrs):
+        chapter = attrs.pop('chapter', None)
+        if chapter:
+            if 'chapters' in attrs:
+                raise serializers.ValidationError('Informe chapter ou chapters, não ambos.')
+            attrs['chapters'] = [chapter]
+        if self.instance and hasattr(self.instance, 'quiz') and attrs.get('type', self.instance.type) != 'quiz':
+            raise serializers.ValidationError({'type': 'Este material possui um desafio vinculado.'})
+        return attrs
 
     class Meta:
         model = Material
-        fields = ['id', 'chapter', 'chapter_title', 'title', 'type', 'url', 'content', 'teacher_only', 'knowledge_areas']
+        fields = ['id', 'chapter', 'chapters', 'title', 'type', 'url', 'content', 'teacher_only', 'knowledge_areas']
 
 
 class AdminAlternativeSerializer(serializers.ModelSerializer):
@@ -287,26 +299,36 @@ class AdminQuestionSerializer(serializers.ModelSerializer):
 class AdminQuizSerializer(serializers.ModelSerializer):
     questions = AdminQuestionSerializer(many=True)
     chapter = serializers.PrimaryKeyRelatedField(queryset=Chapter.objects.all(), write_only=True, required=False)
-    chapter_id = serializers.IntegerField(source='material.chapter_id', read_only=True)
-    chapter_title = serializers.CharField(source='material.chapter.title', read_only=True)
-    book_title = serializers.CharField(source='material.chapter.book.title', read_only=True)
+    chapters = serializers.PrimaryKeyRelatedField(queryset=Chapter.objects.all(), many=True, required=False)
+    book_title = serializers.SerializerMethodField()
     has_attempts = serializers.SerializerMethodField()
 
     class Meta:
         model = Quiz
-        fields = ['id', 'material', 'chapter', 'chapter_id', 'chapter_title', 'book_title', 'title', 'description', 'active', 'questions', 'has_attempts']
+        fields = ['id', 'material', 'chapter', 'chapters', 'book_title', 'title', 'description', 'active', 'questions', 'has_attempts']
         extra_kwargs = {'material': {'required': False}}
+
+    def get_book_title(self, obj):
+        return ', '.join(dict.fromkeys(chapter.book.title for chapter in obj.material.chapters.all()))
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['chapters'] = list(instance.material.chapters.values_list('id', flat=True))
+        return representation
 
     def get_has_attempts(self, obj):
         return obj.attempts.exists()
 
     def validate(self, attrs):
-        if not self.instance and not attrs.get('material') and not attrs.get('chapter'):
+        if not self.instance and not attrs.get('material') and not attrs.get('chapter') and 'chapters' not in attrs:
             raise serializers.ValidationError({'chapter': 'Selecione o capítulo do desafio.'})
         if attrs.get('material') and attrs.get('chapter'):
             raise serializers.ValidationError('Informe um capítulo ou um material existente, não ambos.')
-        if self.instance and 'chapter' in attrs:
-            raise serializers.ValidationError({'chapter': 'O capítulo de um desafio existente não pode ser alterado.'})
+        chapter = attrs.pop('chapter', None)
+        if chapter:
+            if 'chapters' in attrs:
+                raise serializers.ValidationError('Informe chapter ou chapters, não ambos.')
+            attrs['chapters'] = [chapter]
         if self.instance and self.instance.attempts.exists():
             if 'questions' in attrs or ('material' in attrs and attrs['material'].pk != self.instance.material_id):
                 raise serializers.ValidationError('O desafio possui tentativas. Edite apenas título, descrição ou situação.')
@@ -325,12 +347,14 @@ class AdminQuizSerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         questions = validated_data.pop('questions')
-        chapter = validated_data.pop('chapter', None)
-        if chapter:
+        chapters = validated_data.pop('chapters', None)
+        if not validated_data.get('material'):
             validated_data['material'] = Material.objects.create(
-                chapter=chapter, title=validated_data['title'], type='quiz',
+                title=validated_data['title'], type='quiz',
                 content=validated_data.get('description', ''),
             )
+        if chapters is not None:
+            validated_data['material'].chapters.set(chapters)
         quiz = Quiz.objects.create(**validated_data)
         for question_data in questions:
             alternatives = question_data.pop('alternatives')
@@ -340,12 +364,15 @@ class AdminQuizSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def update(self, instance, validated_data):
+        chapters = validated_data.pop('chapters', None)
         questions = validated_data.pop('questions', None)
         if questions is not None and instance.attempts.exists():
             raise serializers.ValidationError('A prova possui tentativas. Edite apenas título, descrição ou situação.')
         for field, value in validated_data.items():
             setattr(instance, field, value)
         instance.save()
+        if chapters is not None:
+            instance.material.chapters.set(chapters)
         Material.objects.filter(pk=instance.material_id).update(title=instance.title, content=instance.description)
         if questions is not None:
             instance.questions.all().delete()
@@ -403,15 +430,15 @@ class BookAdminViewSet(AdminModelViewSet):
 
 
 class ChapterAdminViewSet(AdminModelViewSet):
-    queryset = Chapter.objects.select_related('book').all()
+    queryset = Chapter.objects.select_related('book').prefetch_related('materials').all()
     serializer_class = AdminChapterSerializer
 
 
 class MaterialAdminViewSet(AdminModelViewSet):
-    queryset = Material.objects.select_related('chapter').prefetch_related('knowledge_areas').all().order_by('id')
+    queryset = Material.objects.prefetch_related('chapters', 'knowledge_areas').all().order_by('id')
     serializer_class = AdminMaterialSerializer
 
 
 class QuizAdminViewSet(AdminModelViewSet):
-    queryset = Quiz.objects.select_related('material').prefetch_related('questions__alternatives').all().order_by('id')
+    queryset = Quiz.objects.select_related('material').prefetch_related('questions__alternatives', 'material__chapters__book').all().order_by('id')
     serializer_class = AdminQuizSerializer

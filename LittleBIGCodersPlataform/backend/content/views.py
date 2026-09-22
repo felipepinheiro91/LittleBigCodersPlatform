@@ -29,11 +29,11 @@ class MaterialViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = MaterialSerializer
 
     def get_queryset(self):
-        materials = Material.objects.filter(chapter__book__in=visible_books(self.request.user)).order_by('id')
+        materials = Material.objects.filter(chapters__book__in=visible_books(self.request.user)).order_by('id').distinct()
         if self.request.user.role == 'student':
             materials = materials.filter(teacher_only=False).exclude(type='answer_key')
         if self.request.query_params.get('chapter'):
-            materials = materials.filter(chapter_id=query_id(self.request, 'chapter'))
+            materials = materials.filter(chapters__in=Chapter.objects.filter(pk=query_id(self.request, 'chapter'), book__in=visible_books(self.request.user)))
         return materials
 
 

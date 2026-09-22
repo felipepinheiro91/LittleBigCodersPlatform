@@ -42,7 +42,7 @@ class DashboardView(APIView):
             book_rows = []
             for book in Book.objects.all().order_by('title'):
                 book_students = list(Student.objects.filter(Q(book_accesses__book=book) | Q(class_enrollments__class_group__book_accesses__book=book, school_id=F('class_enrollments__class_group__school_id'))).distinct())
-                book_rows.append({'id': book.pk, 'title': book.title, **summarize(book_students, quizzes.filter(material__chapter__book=book))})
+                book_rows.append({'id': book.pk, 'title': book.title, **summarize(book_students, quizzes.filter(material__chapters__book=book))})
             return Response({
                 'role': 'admin',
                 'totals': {
@@ -61,6 +61,6 @@ class DashboardView(APIView):
         if request.user.role == 'teacher':
             teacher = getattr(request.user, 'teacher_profile', None)
             groups = groups.filter(teacher=teacher, school_id=getattr(teacher, 'school_id', None)) if teacher else groups.none()
-        quizzes = Quiz.objects.filter(active=True, material__chapter__book__in=books, material__teacher_only=False).exclude(material__type='answer_key')
+        quizzes = Quiz.objects.filter(active=True, material__chapters__book__in=books, material__teacher_only=False).exclude(material__type='answer_key')
         students = list(visible_students(request.user))
         return Response({'role': request.user.role, 'active_books': books.filter(active=True).count(), 'class_count': groups.count(), 'metrics': summarize(students, quizzes)})

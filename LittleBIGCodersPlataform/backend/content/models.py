@@ -60,7 +60,7 @@ class KnowledgeArea(models.Model):
 
 
 class Material(models.Model):
-    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='materials')
+    chapters = models.ManyToManyField(Chapter, blank=True, related_name='materials')
     title = models.CharField(max_length=255)
     type = models.CharField(max_length=20, choices=[(value, value) for value in ['video', 'game', 'text', 'quiz', 'answer_key']])
     url = models.URLField(blank=True)

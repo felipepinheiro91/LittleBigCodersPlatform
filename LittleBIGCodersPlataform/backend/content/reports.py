@@ -12,7 +12,7 @@ from .models import Chapter
 def summarize(students, quizzes):
     attempts = Attempt.objects.filter(student__in=students, quiz__in=quizzes, completed=True)
     totals = attempts.aggregate(correct=Sum('score'), total=Sum('total_questions'))
-    proposed = sum(quizzes.filter(material__chapter__book__in=visible_books(student.user, current=False)).distinct().count() for student in students)
+    proposed = sum(quizzes.filter(material__chapters__book__in=visible_books(student.user, current=False)).distinct().count() for student in students)
     completed = attempts.values('student_id', 'quiz_id').distinct().count()
     return {
         'students': len(students), 'proposed': proposed, 'completed': completed,
@@ -52,11 +52,11 @@ class PerformanceView(APIView):
         if 'chapter' in filters:
             get_object_or_404(chapters, pk=filters['chapter'])
             chapters = chapters.filter(pk=filters['chapter'])
-        quizzes = Quiz.objects.filter(material__chapter__in=chapters, material__teacher_only=False).exclude(material__type='answer_key')
+        quizzes = Quiz.objects.filter(material__chapters__in=chapters, material__teacher_only=False).exclude(material__type='answer_key')
         students = list(students.distinct())
         rows = [{'id': student.pk, 'name': student.user.name, **summarize([student], quizzes)} for student in students]
         rows.sort(key=lambda row: (row['score'] is None, -(row['score'] or 0), row['id']))
-        chapter_rows = [{'id': chapter.pk, 'title': chapter.title, **summarize(students, quizzes.filter(material__chapter=chapter))} for chapter in chapters]
+        chapter_rows = [{'id': chapter.pk, 'title': chapter.title, **summarize(students, quizzes.filter(material__chapters=chapter))} for chapter in chapters]
         class_rows = []
         for group in groups:
             members = [student for student in students if student.class_enrollments.filter(class_group=group).exists()]

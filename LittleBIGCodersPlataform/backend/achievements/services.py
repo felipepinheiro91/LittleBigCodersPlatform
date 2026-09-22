@@ -20,10 +20,10 @@ def level_for(percentage):
 def achievement_stats(student, book=None):
     attempts = Attempt.objects.filter(student=student, completed=True)
     assigned = visible_books(student.user, current=False).values('id')
-    quizzes = Quiz.objects.filter(material__chapter__book_id__in=assigned, active=True, material__teacher_only=False).exclude(material__type='answer_key')
+    quizzes = Quiz.objects.filter(material__chapters__book_id__in=assigned, active=True, material__teacher_only=False).exclude(material__type='answer_key').distinct()
     if book:
-        attempts = attempts.filter(quiz__material__chapter__book_id=book)
-        quizzes = quizzes.filter(material__chapter__book_id=book)
+        attempts = attempts.filter(quiz__in=Quiz.objects.filter(material__chapters__book_id=book))
+        quizzes = quizzes.filter(material__chapters__book_id=book).distinct()
     totals = attempts.aggregate(correct=Sum('score'), total=Sum('total_questions'))
     completed = attempts.filter(quiz__in=quizzes).values('quiz_id').distinct().count()
     results = [stat('participation', 'Atividades realizadas', completed, quizzes.count()), stat('accuracy', 'Acertos gerais', totals['correct'] or 0, totals['total'] or 0)]

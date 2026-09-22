@@ -14,12 +14,12 @@ class QuizViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = QuizSerializer
 
     def get_queryset(self):
-        quizzes = Quiz.objects.filter(active=True, material__chapter__book__in=visible_books(self.request.user)).prefetch_related('questions__alternatives')
+        quizzes = Quiz.objects.filter(active=True, material__chapters__book__in=visible_books(self.request.user)).prefetch_related('questions__alternatives')
         if self.request.user.role == 'student':
             quizzes = quizzes.filter(material__teacher_only=False).exclude(material__type='answer_key')
         if self.request.query_params.get('material'):
             quizzes = quizzes.filter(material_id=query_id(self.request, 'material'))
-        return quizzes.order_by('id')
+        return quizzes.order_by('id').distinct()
 
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
@@ -52,7 +52,7 @@ class AttemptViewSet(viewsets.ReadOnlyModelViewSet):
         attempt = Attempt.objects.select_for_update().get(pk=attempt.pk)
         if attempt.completed:
             raise ValidationError('Tentativa já finalizada. Inicie outra para refazer a prova.')
-        if not visible_books(request.user).filter(pk=attempt.quiz.material.chapter.book_id).exists():
+        if not attempt.quiz.active or attempt.quiz.material.teacher_only or attempt.quiz.material.type == 'answer_key' or not attempt.quiz.material.chapters.filter(book__in=visible_books(request.user)).exists():
             raise PermissionDenied('Acesso ao livro expirado.')
         payload = SubmissionSerializer(data=request.data)
         payload.is_valid(raise_exception=True)

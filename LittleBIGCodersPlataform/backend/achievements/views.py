@@ -26,7 +26,7 @@ class RankingView(APIView):
             get_object_or_404(visible_books(request.user, current=False), pk=book)
         students = Student.objects.filter(attempts__completed=True)
         if book:
-            students = students.filter(attempts__quiz__material__chapter__book_id=book)
+            students = students.filter(attempts__quiz__material__chapters__book_id=book)
         rows = []
         for student in students.distinct():
             result = next((item for item in achievement_stats(student, book) if item['category'] == category), None)
