@@ -17,26 +17,23 @@ export function MaterialViewer({ material, fullscreen = false }) {
     <Box id={playerId} hidden={!open && !fullscreen} mt={!fullscreen && open ? "4" : "0"} className={fullscreen ? "material-viewer-body" : undefined}>
       {(open || fullscreen) && <Box role="region" aria-label={`${label}: ${material.title}`} className={fullscreen ? "material-viewer-region" : undefined}>
         <Box className={fullscreen ? "material-media-stage" : undefined}>
-        {source.type === "sharing" ? <Text color="orange.700">Este é um link de compartilhamento do OneDrive. Para exibir o material aqui, o professor deve cadastrar o endereço gerado em Incorporar → Gerar (o endereço src do iframe). Enquanto isso, use a opção Abrir original.</Text> : failed ? <Text role="alert" color="orange.700">Não foi possível carregar o material. Use a opção Abrir original.</Text> :
+        {source.type === "sharing" ? <Text color="orange.700">Este é um link de compartilhamento do OneDrive. Para exibir o material aqui, o professor deve cadastrar o endereço gerado em Incorporar → Gerar (o endereço src do iframe).</Text> : failed ? <Text role="alert" color="orange.700">Não foi possível carregar o material. Peça ao professor para verificar o endereço e as permissões de acesso.</Text> :
           frame ? <iframe src={source.src} title={material.title} allow="fullscreen; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation" onError={() => setFailed(true)} style={{ display: "block", width: "100%", border: 0, borderRadius: 8, ...(source.kind === "video" ? { aspectRatio: "16 / 9" } : { height: "min(70vh, 640px)", minHeight: 360 }) }} /> :
           source.kind === "video" ? <video src={source.src} aria-label={material.title} controls playsInline preload="metadata" onError={() => setFailed(true)} style={{ width: "100%", maxHeight: "70vh" }} /> :
           source.kind === "audio" ? <audio src={source.src} aria-label={material.title} controls preload="metadata" onError={() => setFailed(true)} style={{ width: "100%" }} /> :
           <img src={source.src} alt={material.title} onError={() => setFailed(true)} style={{ width: "100%", maxHeight: "70vh", objectFit: "contain" }} />}
         </Box>
-        {!fullscreen && frame && source.type !== "sharing" && <Text fontSize="sm" color="gray.600" mt="3">{source.provider === "onedrive" ? "Se o OneDrive bloquear a visualização, confira as permissões do arquivo e gere novamente o endereço em Incorporar. Contas corporativas podem exigir login Microsoft. Você também pode abrir o original abaixo." : "Se a visualização não carregar, abra o original. Alguns serviços exigem acesso ou bloqueiam a incorporação."}</Text>}
-        {!fullscreen && <Box mt="3"><a className="resource-link" href={material.url} target="_blank" rel="noopener noreferrer">Abrir original ↗</a></Box>}
+        {!fullscreen && frame && source.type !== "sharing" && <Text fontSize="sm" color="gray.600" mt="3">{source.provider === "onedrive" ? "Se o OneDrive bloquear a visualização, confira as permissões do arquivo e gere novamente o endereço em Incorporar. Contas corporativas podem exigir login Microsoft." : "Se a visualização não carregar, peça ao professor para verificar o endereço e as permissões de incorporação."}</Text>}
       </Box>}
     </Box>
   </Box>;
 }
 
 export function MaterialScreen({ material, onBack }) {
-  const source = materialSource(material.url, material.type);
   return <Box className="material-screen">
     <Flex as="header" className="material-screen-header" align="center" gap="3">
       <Button onClick={onBack} colorPalette="purple" flexShrink="0">← Voltar</Button>
       <Heading as="h1" size="md" flex="1" minW="0" truncate>{material.title}</Heading>
-      {source && <a className="resource-link" href={material.url} target="_blank" rel="noopener noreferrer">Abrir original ↗</a>}
     </Flex>
     <Box as="main" className="material-screen-main"><MaterialViewer key={material.url} material={material} fullscreen /></Box>
   </Box>;
