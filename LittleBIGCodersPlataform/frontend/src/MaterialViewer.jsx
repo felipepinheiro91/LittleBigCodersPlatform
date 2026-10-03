@@ -16,12 +16,12 @@ export function MaterialViewer({ material }) {
     <Button colorPalette="purple" aria-expanded={open} aria-controls={playerId} onClick={() => { setOpen(current => !current); setFailed(false); }}>{open ? `Recolher ${label}` : `Abrir ${label}`}</Button>
     <Box id={playerId} hidden={!open} mt={open ? "4" : "0"}>
       {open && <Box role="region" aria-label={`${label}: ${material.title}`}>
-        {failed ? <Text role="alert" color="orange.700">Não foi possível carregar o material. Use o link abaixo para abrir o original.</Text> :
+        {source.type === "sharing" ? <Text color="orange.700">Este é um link de compartilhamento do OneDrive. Para exibir o material aqui, o professor deve cadastrar o endereço gerado em Incorporar → Gerar (o endereço src do iframe). Enquanto isso, abra o original abaixo.</Text> : failed ? <Text role="alert" color="orange.700">Não foi possível carregar o material. Use o link abaixo para abrir o original.</Text> :
           frame ? <iframe src={source.src} title={material.title} allow="fullscreen; encrypted-media; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation" onError={() => setFailed(true)} style={{ display: "block", width: "100%", border: 0, borderRadius: 8, ...(source.kind === "video" ? { aspectRatio: "16 / 9" } : { height: "min(70vh, 640px)", minHeight: 360 }) }} /> :
           source.kind === "video" ? <video src={source.src} aria-label={material.title} controls playsInline preload="metadata" onError={() => setFailed(true)} style={{ width: "100%", maxHeight: "70vh" }} /> :
           source.kind === "audio" ? <audio src={source.src} aria-label={material.title} controls preload="metadata" onError={() => setFailed(true)} style={{ width: "100%" }} /> :
           <img src={source.src} alt={material.title} onError={() => setFailed(true)} style={{ width: "100%", maxHeight: "70vh", objectFit: "contain" }} />}
-        {frame && <Text fontSize="sm" color="gray.600" mt="3">Se a visualização não carregar, abra o original. Alguns serviços exigem acesso ou bloqueiam a incorporação.</Text>}
+        {frame && source.type !== "sharing" && <Text fontSize="sm" color="gray.600" mt="3">{source.provider === "onedrive" ? "Se o OneDrive bloquear a visualização, confira as permissões do arquivo e gere novamente o endereço em Incorporar. Contas corporativas podem exigir login Microsoft. Você também pode abrir o original abaixo." : "Se a visualização não carregar, abra o original. Alguns serviços exigem acesso ou bloqueiam a incorporação."}</Text>}
         <Box mt="3"><a className="resource-link" href={material.url} target="_blank" rel="noopener noreferrer">Abrir original ↗</a></Box>
       </Box>}
     </Box>
