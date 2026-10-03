@@ -4,6 +4,15 @@ export function materialSource(value, declaredType) {
   let url;
   try { url = new URL(value); } catch { return null; }
   if (!["http:", "https:"].includes(url.protocol) || url.username || url.password) return null;
+  // Sharing URLs return a viewer page, not a file playable by <video>.
+  if (url.hostname === "1drv.ms") {
+    url.searchParams.set("embed", "1");
+    return { kind: url.pathname.startsWith("/v/") || declaredType === "video" ? "video" : "document", type: "embed", src: url.href };
+  }
+  if (url.hostname === "onedrive.live.com" && (url.pathname === "/embed" || url.searchParams.has("resid"))) {
+    url.pathname = "/embed";
+    return { kind: declaredType === "video" ? "video" : "document", type: "embed", src: url.href };
+  }
   const video = videoSource(url.href);
   if (video) return { kind: "video", ...video };
   const path = url.pathname.toLowerCase();
