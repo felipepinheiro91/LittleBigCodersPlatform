@@ -7,6 +7,7 @@ import { Performance } from "./performance";
 import { Sequences } from "./sequences";
 import { Quiz } from "./quiz";
 import { AdminOverview, AdminPanel } from "./admin";
+import { MaterialScreen } from "./MaterialViewer";
 
 function Logo() {
   return <Flex align="center" gap="2"><Box className="logo-mark">&lt;/&gt;</Box><Text fontWeight="800" fontSize="xl">Little<span className="accent">BIG</span> Coders</Text></Flex>;
@@ -29,6 +30,7 @@ function Platform({ user, onLogout }) {
   const navigate = (page, params = {}) => setRoute({ page, ...params });
   const student = user.role === "student";
   const navigation = user.role === "admin" ? [["admin", "⚙️", "Cadastros"], ["home", "📊", "Visão geral"], ["books", "📚", "Livros"]] : [["home", "🏠", "Início"], ["books", "📚", "Meus livros"], ...(student ? [["achievements", "🏅", "Conquistas"], ["attempts", "🧩", "Minhas provas"]] : [["classes", "👥", "Turmas"], ["performance", "📊", "Desempenho"]])];
+  if (route.page === "material") return <MaterialScreen material={route.material} onBack={() => navigate("book", { book: route.book })} />;
   let content;
   switch (route.page) {
     case "admin": content = <AdminPanel />; break;
