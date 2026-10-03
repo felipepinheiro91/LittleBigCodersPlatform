@@ -8,9 +8,10 @@ import { Sequences } from "./sequences";
 import { Quiz } from "./quiz";
 import { AdminOverview, AdminPanel } from "./admin";
 import { MaterialScreen } from "./MaterialViewer";
+import { MobileNavigation } from "./MobileNavigation";
 
 function Logo() {
-  return <Flex align="center" gap="2"><Box className="logo-mark">&lt;/&gt;</Box><Text fontWeight="800" fontSize="xl">Little<span className="accent">BIG</span> Coders</Text></Flex>;
+  return <Flex align="center" gap="2"><Box className="logo-mark">&lt;/&gt;</Box><Text fontWeight="800" fontSize={{ base: "lg", md: "xl" }}>Little<span className="accent">BIG</span> Coders</Text></Flex>;
 }
 function Login({ api, onLogin }) {
   const [login, setLogin] = useState("");
@@ -31,6 +32,7 @@ function Platform({ user, onLogout }) {
   const student = user.role === "student";
   const navigation = user.role === "admin" ? [["admin", "⚙️", "Cadastros"], ["home", "📊", "Visão geral"], ["books", "📚", "Livros"]] : [["home", "🏠", "Início"], ["books", "📚", "Meus livros"], ...(student ? [["achievements", "🏅", "Conquistas"], ["attempts", "🧩", "Minhas provas"]] : [["classes", "👥", "Turmas"], ["performance", "📊", "Desempenho"]])];
   if (route.page === "material") return <MaterialScreen material={route.material} onBack={() => navigate("book", { book: route.book })} />;
+  const activePage = ["book", "quiz", "sequences"].includes(route.page) ? "books" : route.page;
   let content;
   switch (route.page) {
     case "admin": content = <AdminPanel />; break;
@@ -44,7 +46,7 @@ function Platform({ user, onLogout }) {
     case "attempts": content = <Attempts navigate={navigate} />; break;
     default: content = user.role === "admin" ? <AdminOverview navigate={navigate} /> : <Home user={user} navigate={navigate} />;
   }
-  return <Flex minH="100vh" bg="#f7f8fc" direction={{ base: "column", md: "row" }}><Box as="aside" className="sidebar" w={{ base: "full", md: "240px" }} flexShrink="0" p="5"><Logo /><Stack as="nav" aria-label="Menu principal" gap="2" mt="8">{navigation.map(([page, icon, label]) => <Button className="sidebar-link" key={page} justifyContent="start" colorPalette="purple" variant={route.page === page ? "solid" : "ghost"} onClick={() => navigate(page)}><span className="sidebar-icon" aria-hidden="true">{icon}</span><span>{label}</span></Button>)}<Button className="sidebar-link" mt="4" variant="outline" onClick={onLogout}><span className="sidebar-icon" aria-hidden="true">🚪</span><span>Sair</span></Button></Stack></Box><Box flex="1" minW="0"><Flex className="topbar" px="7" py="4" align="center" justify="space-between" gap="3" wrap="wrap"><Box><Text fontWeight="800">{user.name || user.login}</Text><Text fontSize="sm">{student ? "Estudante" : user.role === "teacher" ? "Professor" : "Administrador"}</Text></Box><Text fontSize="sm">🏫 {user.school?.name ?? "Sem escola vinculada"}</Text></Flex><Stack as="main" p={{ base: "4", lg: "8" }} gap="6" maxW="1500px" mx="auto" key={`${route.page}-${route.book?.id ?? ""}-${route.chapter?.id ?? ""}-${route.quizId ?? ""}`}>{content}</Stack></Box></Flex>;
+  return <Flex minH="100vh" bg="#f7f8fc" direction={{ base: "column", md: "row" }}><MobileNavigation logo={<Logo />} user={user} navigation={navigation} activePage={activePage} navigate={navigate} onLogout={onLogout} /><Box as="aside" display={{ base: "none", md: "flex" }} className="sidebar" w={{ base: "full", md: "240px" }} flexShrink="0" p="5"><Logo /><Stack as="nav" aria-label="Menu principal" gap="2" mt="8">{navigation.map(([page, icon, label]) => <Button className="sidebar-link" key={page} justifyContent="start" colorPalette="purple" variant={activePage === page ? "solid" : "ghost"} aria-current={activePage === page ? "page" : undefined} onClick={() => navigate(page)}><span className="sidebar-icon" aria-hidden="true">{icon}</span><span>{label}</span></Button>)}<Button className="sidebar-link" mt="4" variant="outline" onClick={onLogout}><span className="sidebar-icon" aria-hidden="true">🚪</span><span>Sair</span></Button></Stack></Box><Box flex="1" minW="0"><Flex display={{ base: "none", md: "flex" }} className="topbar" px="7" py="4" align="center" justify="space-between" gap="3" wrap="wrap"><Box><Text fontWeight="800">{user.name || user.login}</Text><Text fontSize="sm">{student ? "Estudante" : user.role === "teacher" ? "Professor" : "Administrador"}</Text></Box><Text fontSize="sm">🏫 {user.school?.name ?? "Sem escola vinculada"}</Text></Flex><Stack as="main" p={{ base: "4", lg: "8" }} gap="6" maxW="1500px" mx="auto" key={`${route.page}-${route.book?.id ?? ""}-${route.chapter?.id ?? ""}-${route.quizId ?? ""}`}>{content}</Stack></Box></Flex>;
 }
 export default function App() {
   const [user, setUser] = useState(null);
