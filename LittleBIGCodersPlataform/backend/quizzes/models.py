@@ -10,6 +10,8 @@ class Quiz(models.Model):
 class Question(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
     statement = models.TextField()
+    image = models.TextField(blank=True)
+    image_description = models.CharField(max_length=255, blank=True)
     order = models.PositiveIntegerField(default=1)
     knowledge_area = models.ForeignKey('content.KnowledgeArea', null=True, blank=True, on_delete=models.SET_NULL)
 

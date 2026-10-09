@@ -3,6 +3,8 @@ import { Badge, Box, Button, Flex, Heading, Input, SimpleGrid, Stack, Text, Text
 import { Empty, Field, PageTitle, Resource, useApi, useResource } from "./ui";
 import { SequenceForm } from "./sequences";
 import { EmbedInput } from "./EmbedInput";
+import { QuestionImageInput } from "./QuestionImage";
+import { SearchMultiSelect } from "./SearchMultiSelect";
 
 const sections = [
   ["books", "📚", "Livros", "Cadastre capas e organize sua coleção"],
@@ -95,7 +97,7 @@ function BasicForm({ title, endpoint, initial, editing, onCreated, onCancel, chi
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const set = (field, value) => setForm(current => ({ ...current, [field]: value }));
+  const set = (field, value) => setForm(current => ({ ...current, [field]: typeof value === "function" ? value(current[field]) : value }));
   async function submit(event) {
     event.preventDefault(); setBusy(true); setError(""); setMessage("");
     try {
@@ -149,17 +151,17 @@ function Fields({ section, form, set, resources, editing }) {
 
 
 function Multi({ label, items, value, onChange, filter = () => true }) {
-  return <Field label={`${label} (Ctrl para selecionar vários)`}><select multiple size="6" value={value.map(String)} onChange={event => onChange([...event.target.selectedOptions].map(option => Number(option.value)))}>{items.filter(filter).map(item => <option key={item.id} value={item.id}>{item.name ?? item.title}{item.school_name ? ` · ${item.school_name}` : ""}</option>)}</select></Field>;
+  return <SearchMultiSelect label={label} items={items} value={value} onChange={onChange} filter={filter} />;
 }
 function Check({ label, checked, onChange }) {
   return <label className="admin-check"><input type="checkbox" checked={checked} onChange={event => onChange(event.target.checked)} /> {label}</label>;
 }
 
 function QuizForm({ resources, onCreated, editing, onCancel }) {
-  const emptyQuestion = () => ({ statement: "", order: 1, knowledge_area: null, alternatives: [{ text: "", order: 1, is_correct: true }, { text: "", order: 2, is_correct: false }] });
+  const emptyQuestion = () => ({ statement: "", image: "", image_description: "", order: 1, knowledge_area: null, alternatives: [{ text: "", order: 1, is_correct: true }, { text: "", order: 2, is_correct: false }] });
   const initial = editing ? { ...editing } : { chapters: [], title: "", description: "", active: true, questions: [emptyQuestion()] };
   return <BasicForm key={editing?.id ?? "new-quiz"} title={editing ? `✏️ Editar desafio · ${editing.title}` : "🧩 Novo desafio"} endpoint="admin/quizzes/" initial={initial} editing={editing} onCreated={onCreated} onCancel={onCancel}>{({ form, set }) => {
-    const updateQuestion = (index, updater) => set("questions", form.questions.map((question, position) => position === index ? updater(question) : question));
+    const updateQuestion = (index, updater) => set("questions", questions => questions.map((question, position) => position === index ? updater(question) : question));
     return <>
       <Text color="gray.600">Cadastre o recurso aqui. Para utilizá-lo, vincule-o depois na aba Capítulos. Alterações no conteúdo valem para todos os capítulos que o utilizam.</Text>
       <Field label="Título do desafio *" required value={form.title} onChange={event => set("title", event.target.value)} />
@@ -170,6 +172,7 @@ function QuizForm({ resources, onCreated, editing, onCancel }) {
         {form.questions.map((question, questionIndex) => <Box className="question-editor" key={questionIndex}>
           <Flex justify="space-between" gap="3"><Heading size="md">Questão {questionIndex + 1}</Heading>{form.questions.length > 1 && <Button type="button" size="sm" variant="ghost" onClick={() => set("questions", form.questions.filter((_, index) => index !== questionIndex))}>Remover questão</Button>}</Flex>
           <Field label="Enunciado *"><Textarea required value={question.statement} onChange={event => updateQuestion(questionIndex, current => ({ ...current, statement: event.target.value }))} /></Field>
+          <QuestionImageInput question={question} onChange={patch => updateQuestion(questionIndex, current => ({ ...current, ...patch }))} />
           <Text fontWeight="800">Alternativas · selecione a resposta correta</Text>
           {question.alternatives.map((alternative, alternativeIndex) => <Flex key={alternativeIndex} gap="3" align="center">
             <input aria-label={`Marcar alternativa ${alternativeIndex + 1} como correta na questão ${questionIndex + 1}`} type="radio" name={`correct-${questionIndex}`} checked={alternative.is_correct} onChange={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => ({ ...item, is_correct: index === alternativeIndex })) }))} />

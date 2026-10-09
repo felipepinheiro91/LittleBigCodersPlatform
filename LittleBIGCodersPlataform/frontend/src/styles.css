@@ -83,3 +83,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (width >= 48rem) { .mobile-header { display: none; } }
 @keyframes mobile-menu-enter { from { transform: translateX(-100%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .mobile-menu-dialog[open] { animation: none; } }
+
+.question-image { display: block; width: auto; max-width: 100%; max-height: 420px; object-fit: contain; border-radius: 12px; margin: 1rem auto; }
+
+.multi-selected { margin-bottom: .5rem; }
+.multi-chip { background: #eee9ff; border: 1px solid #ded5fc; border-radius: 10px; color: #4c31c5; font-size: .875rem; max-width: 100%; padding: .25rem .25rem .25rem .65rem; }
+.multi-chip button { flex-shrink: 0; min-height: 32px; min-width: 32px; }
+.multi-search-input { min-height: 44px; }
+.multi-options { background: white; border: 1px solid #ded5fc; border-radius: 12px; box-shadow: 0 10px 28px #281e4920; max-height: min(320px, 45vh); overflow-y: auto; overscroll-behavior: contain; padding: .35rem; }
+.multi-option { border-radius: 8px; cursor: pointer; min-height: 44px; overflow-wrap: anywhere; padding: .65rem .75rem; }
+.multi-option[data-highlighted] { background: #f0edff; }
+.multi-option[data-state="checked"] { color: #4c31c5; font-weight: 800; }

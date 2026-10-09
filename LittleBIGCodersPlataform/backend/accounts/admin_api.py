@@ -288,7 +288,28 @@ class AdminQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['statement', 'order', 'knowledge_area', 'alternatives']
+        fields = ['statement', 'image', 'image_description', 'order', 'knowledge_area', 'alternatives']
+
+    def validate_image(self, value):
+        if not value:
+            return ''
+        from io import BytesIO
+        from PIL import Image
+        try:
+            header, encoded = value.split(',', 1)
+            formats = {'data:image/jpeg;base64': 'JPEG', 'data:image/png;base64': 'PNG', 'data:image/webp;base64': 'WEBP'}
+            if header not in formats or len(encoded) > 2800000:
+                raise ValueError()
+            content = base64.b64decode(encoded, validate=True)
+            if len(content) > 2 * 1024 * 1024:
+                raise ValueError()
+            with Image.open(BytesIO(content)) as image:
+                if image.format != formats[header]:
+                    raise ValueError()
+                image.verify()
+        except Exception:
+            raise serializers.ValidationError('Envie uma imagem JPG, PNG ou WebP válida de até 2 MB.')
+        return value
 
     def validate_alternatives(self, alternatives):
         if len(alternatives) < 2 or sum(item.get('is_correct', False) for item in alternatives) != 1:
