@@ -9,11 +9,12 @@ import { Quiz } from "./quiz";
 import { AdminOverview, AdminPanel } from "./admin";
 import { MaterialScreen } from "./MaterialViewer";
 import { MobileNavigation } from "./MobileNavigation";
+import { LandingPage } from "./LandingPage";
 
 function Logo() {
   return <Flex align="center" gap="2"><Box className="logo-mark">&lt;/&gt;</Box><Text fontWeight="800" fontSize={{ base: "lg", md: "xl" }}>Little<span className="accent">BIG</span> Coders</Text></Flex>;
 }
-function Login({ api, onLogin }) {
+function Login({ api, onLogin, onBack }) {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,7 +25,7 @@ function Login({ api, onLogin }) {
     catch (reason) { setError(reason.message); }
     finally { setLoading(false); }
   }
-  return <Flex minH="100vh" className="login-page" align="center" justify="center" p="5"><SimpleGrid columns={{ base: 1, lg: 2 }} maxW="1080px" w="full" bg="white" borderRadius="32px" overflow="hidden" boxShadow="0 28px 80px #33208025"><Stack p={{ base: "8", md: "12" }} gap="7"><Logo /><Heading size="2xl">Sua jornada no mundo da tecnologia começa aqui.</Heading><Text>Entre com as credenciais cadastradas pela sua escola.</Text><Box as="form" onSubmit={submit}><Stack gap="4"><Field label="Login" autoComplete="username" required value={login} onChange={event => setLogin(event.target.value)} /><Field label="Senha" type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} />{error && <Text role="alert" color="red.700">{error}</Text>}<Button type="submit" colorPalette="purple" loading={loading}>Entrar na plataforma</Button></Stack></Box></Stack><Stack className="login-illustration" p="10" justify="space-between" minH="620px" display={{ base: "none", lg: "flex" }}><Badge alignSelf="start" colorPalette="yellow" variant="solid">APRENDER É UMA AVENTURA</Badge><Box className="rocket" fontSize="90px"><Box className="orbit orbit-one" /><Box className="orbit orbit-two" />🚀</Box><Box><Heading size="2xl">Explore, crie e conquiste</Heading><Text mt="2" opacity=".85">Materiais, desafios e conquistas para cada etapa da sua aprendizagem.</Text></Box></Stack></SimpleGrid></Flex>;
+  return <Flex minH="100vh" className="login-page" align="center" justify="center" p="5"><SimpleGrid columns={{ base: 1, lg: 2 }} maxW="1080px" w="full" bg="white" borderRadius="32px" overflow="hidden" boxShadow="0 28px 80px #33208025"><Stack p={{ base: "8", md: "12" }} gap="7"><Button alignSelf="start" variant="ghost" onClick={onBack}>← Voltar ao site</Button><Logo /><Heading size="2xl">Sua jornada no mundo da tecnologia começa aqui.</Heading><Text>Entre com as credenciais cadastradas pela sua escola.</Text><Box as="form" onSubmit={submit}><Stack gap="4"><Field label="Login" autoComplete="username" required value={login} onChange={event => setLogin(event.target.value)} /><Field label="Senha" type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} />{error && <Text role="alert" color="red.700">{error}</Text>}<Button type="submit" colorPalette="purple" loading={loading}>Entrar na plataforma</Button></Stack></Box></Stack><Stack className="login-illustration" p="10" justify="space-between" minH="620px" display={{ base: "none", lg: "flex" }}><Badge alignSelf="start" colorPalette="yellow" variant="solid">APRENDER É UMA AVENTURA</Badge><Box className="rocket" fontSize="90px"><Box className="orbit orbit-one" /><Box className="orbit orbit-two" />🚀</Box><Box><Heading size="2xl">Explore, crie e conquiste</Heading><Text mt="2" opacity=".85">Materiais, desafios e conquistas para cada etapa da sua aprendizagem.</Text></Box></Stack></SimpleGrid></Flex>;
 }
 function Platform({ user, onLogout }) {
   const [route, setRoute] = useState({ page: user.role === "admin" ? "admin" : "home" });
@@ -50,6 +51,8 @@ function Platform({ user, onLogout }) {
 }
 export default function App() {
   const [user, setUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(window.location.hash === "#login");
+  useEffect(() => { const update = () => setShowLogin(window.location.hash === "#login"); window.addEventListener("hashchange", update); return () => window.removeEventListener("hashchange", update); }, []);
   const [api] = useState(() => createApi({ onExpired: () => setUser(null) }));
   const [restoring, setRestoring] = useState(api.hasSession());
   const [error, setError] = useState("");
@@ -63,5 +66,5 @@ export default function App() {
   }, [api, revision]);
   if (restoring) return <Text role="status" p="8">Restaurando sua sessão…</Text>;
   if (error && api.hasSession()) return <Stack p="8"><Text role="alert">{error}</Text><Button onClick={() => setRevision(value => value + 1)}>Tentar novamente</Button><Button onClick={() => { api.logout(); setError(""); setUser(null); }}>Voltar ao login</Button></Stack>;
-  return <ApiContext.Provider value={api}>{user ? <Platform key={user.id} user={user} onLogout={() => { api.logout(); setUser(null); }} /> : <Login api={api} onLogin={profile => { setError(""); setUser(profile); }} />}</ApiContext.Provider>;
+  return <ApiContext.Provider value={api}>{user ? <Platform key={user.id} user={user} onLogout={() => { api.logout(); setUser(null); window.location.hash = ""; setShowLogin(false); }} /> : showLogin ? <Login onBack={() => { window.location.hash = ""; setShowLogin(false); }} api={api} onLogin={profile => { setError(""); setUser(profile); window.history.replaceState(null, "", window.location.pathname + window.location.search); setShowLogin(false); }} /> : <LandingPage />}</ApiContext.Provider>;
 }
