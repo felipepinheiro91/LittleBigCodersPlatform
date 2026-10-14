@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&display=swap');
 
 * { box-sizing: border-box; }
-body { margin: 0; color: #281e49; font-family: "Nunito", sans-serif; }
-button, input { font-family: inherit; }
+body { margin: 0; color: #281e49; font-family: "Open Sans", sans-serif; }
+button, input, select, textarea { font-family: inherit; }
 .accent { color: #f06d55; }
 .logo-mark { align-items: center; background: #5b41d7; border-radius: 11px; color: white; display: flex; font-size: .82rem; font-weight: 900; height: 35px; justify-content: center; width: 38px; }
 .login-page { background: linear-gradient(135deg, #f2efff 0%, #fcf2ed 100%); }
