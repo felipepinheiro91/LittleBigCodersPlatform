@@ -8,13 +8,13 @@ export function ImageCarousel({ children, label = "Imagens", cards = false }) {
   function move(index) {
     const viewport = viewportRef.current;
     const slide = viewport.children[Math.max(0, Math.min(index, slides.length - 1))];
-    const left = viewport.scrollLeft + slide.getBoundingClientRect().left - viewport.getBoundingClientRect().left;
+    const left = viewport.scrollLeft + slide.getBoundingClientRect().left - viewport.getBoundingClientRect().left - (viewport.clientWidth - slide.offsetWidth) / 2;
     viewport.scrollTo({ left, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   }
   function sync() {
     const viewport = viewportRef.current;
-    const left = viewport.getBoundingClientRect().left;
-    const distances = [...viewport.children].map(slide => Math.abs(slide.getBoundingClientRect().left - left));
+    const center = viewport.getBoundingClientRect().left + viewport.clientWidth / 2;
+    const distances = [...viewport.children].map(slide => { const rect = slide.getBoundingClientRect(); return Math.abs(rect.left + rect.width / 2 - center); });
     setActive(distances.indexOf(Math.min(...distances)));
   }
   return <div className={`lbc-carousel ${cards ? "is-cards" : ""}`} role="region" aria-roledescription="carrossel" aria-label={label}>
@@ -25,7 +25,7 @@ export function ImageCarousel({ children, label = "Imagens", cards = false }) {
       if (event.key === "Home") { event.preventDefault(); move(0); }
       if (event.key === "End") { event.preventDefault(); move(slides.length - 1); }
     }}>
-      {slides.map((slide, index) => <div className="lbc-carousel-slide" key={slide.key ?? index} role="group" aria-roledescription="slide" aria-label={`${index + 1} de ${slides.length}`}>{slide}</div>)}
+      {slides.map((slide, index) => <div className={`lbc-carousel-slide ${active === index ? "is-active" : ""}`} key={slide.key ?? index} role="group" aria-roledescription="slide" aria-label={`${index + 1} de ${slides.length}`}>{slide}</div>)}
     </div>
     <div className="lbc-carousel-controls"><button type="button" aria-label={`Imagem anterior: ${label}`} aria-controls={viewportId} disabled={active === 0} onClick={() => move(active - 1)}>←</button><span aria-live="polite" aria-atomic="true">{active + 1} / {slides.length}</span><button type="button" aria-label={`Próxima imagem: ${label}`} aria-controls={viewportId} disabled={active === slides.length - 1} onClick={() => move(active + 1)}>→</button></div>
   </div>;

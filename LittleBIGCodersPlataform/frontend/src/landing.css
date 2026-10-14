@@ -274,3 +274,56 @@
 .lbc-legacy-section[class*="lbc-tone-"] a:focus-visible, .lbc-legacy-section[class*="lbc-tone-"] button:focus-visible, .lbc-legacy-section[class*="lbc-tone-"] .lbc-carousel-viewport:focus-visible { outline-color: var(--section-focus); }
 .lbc-tone-navy .lbc-legacy-links .lbc-button-dark, .lbc-tone-purple .lbc-legacy-links .lbc-button-dark { background: #ebb24d; color: #33354d; }
 @media (max-width: 520px) { .lbc-legacy-section[class*="lbc-tone-"] { padding-block: 40px; } }
+
+.lbc-carousel { width: 100%; }
+.lbc-carousel-viewport { padding: 18px 15%; scroll-padding-inline: 15%; border-radius: 0; }
+.lbc-carousel-slide { scroll-snap-align: center; opacity: .6; transition: opacity .35s ease; }
+.lbc-carousel-slide.is-active { opacity: 1; }
+.lbc-carousel-slide > img, .lbc-carousel-slide > figure { transform: scale(.94); transition: transform .35s ease; }
+.lbc-carousel-slide.is-active > img, .lbc-carousel-slide.is-active > figure { transform: scale(1); }
+.lbc-carousel-slide > img { background: #ffffff25; box-shadow: 0 8px 24px #33354d20; }
+.lbc-carousel-slide > figure { background: #e9e0f2; box-shadow: 0 8px 24px #33354d20; }
+.lbc-carousel-controls button { background: #33354d; border-color: #33354d; color: white; }
+.lbc-carousel-controls button:hover:not(:disabled) { background: #6c4a97; }
+@media (max-width: 520px) { .lbc-carousel-viewport { padding-inline: 10%; scroll-padding-inline: 10%; gap: 12px; } .lbc-carousel-slide > img, .lbc-carousel-slide > figure img { height: 280px; } }
+.lbc-carousel-slide:not(.is-active) > img, .lbc-carousel-slide:not(.is-active) > figure img { object-fit: cover; }
+
+.lbc-school-section { padding-block: 80px; color: #33354d; }
+.lbc-school-yellow { background: #ebb24d; }
+.lbc-school-blue { background: #aaddf7; }
+.lbc-school-lilac { background: #d1c4e0; }
+.lbc-school-cyan { background: #1cbdd5; }
+.lbc-school-navy { background: #33354d; color: white; }
+.lbc-school-section h1 { font-size: clamp(2.6rem, 4.5vw, 4.2rem); }
+.lbc-school-section h2 { max-width: 1050px; }
+.lbc-school-section h1 span, .lbc-school-section h2 span { color: #513472; }
+.lbc-school-navy h2 span { color: #ebb24d; }
+.lbc-school-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 64px; align-items: center; }
+.lbc-school-lead { margin-top: 26px !important; font-size: 1.05rem; line-height: 1.8; }
+.lbc-school-photo { width: 100%; height: 440px; object-fit: cover; border-radius: 14px 70px 14px 14px; }
+.lbc-school-photo.classroom { height: 560px; object-position: center; }
+.lbc-school-diagram { width: 100%; max-width: 480px; height: auto; margin-inline: auto; }
+.lbc-school-reasons, .lbc-school-offerings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; list-style: none; margin: 30px 0; padding: 0; }
+.lbc-school-reasons li, .lbc-school-offerings li { background: #ffffffb8; border-radius: 10px; padding: 20px; font-size: .85rem; font-weight: 600; }
+.lbc-school-callout { background: #6c4a97; color: white; border-radius: 10px; padding: 22px; font-weight: 600; margin-top: 24px !important; }
+.lbc-school-cyan .lbc-school-callout { background: #ebb24d; color: #33354d; }
+.lbc-school-books { width: min(100%, 800px); height: auto; margin: 0 auto 48px; }
+.lbc-school-offerings li { display: flex; align-items: center; gap: 14px; font-size: 1rem; }
+.lbc-school-offerings li > span { font-size: 1.8rem; }
+.lbc-school-attendance { color: #513472; font-weight: 600; }
+.lbc-school-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; list-style: none; padding: 0; margin: 38px 0 0; }
+.lbc-school-benefits li { display: flex; align-items: center; gap: 20px; background: #ffffffcb; padding: 28px; border-radius: 12px; font-weight: 600; }
+.lbc-school-benefits li > span { color: #008798; font-size: 2rem; }
+.lbc-school-steps { padding: 0; list-style: none; margin: 30px 0 0; }
+.lbc-school-steps li { background: #d1c4e0; color: #33354d; padding: 18px 22px; border-radius: 10px; margin-top: 18px; }
+.lbc-school-responsibilities { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 40px; }
+.lbc-school-responsibilities article { background: #ffffffcf; padding: 30px; border-radius: 12px; }
+.lbc-school-responsibilities h3 { color: #513472; }
+.lbc-school-responsibilities ul { padding: 0; margin: 20px 0 0; list-style: none; }
+.lbc-school-responsibilities li { border-top: 1px solid #33354d25; padding: 18px 0; }
+.lbc-school-schedule { background: #ebb24d; color: #33354d; margin-top: 30px; }
+.lbc-school-schedule:hover { background: #fcc152; }
+.lbc-school-navy a:focus-visible { outline-color: #ebb24d; }
+@media (max-width: 1000px) { .lbc-school-grid { gap: 32px; } .lbc-school-reasons { grid-template-columns: 1fr; gap: 12px; } .lbc-school-reasons li { padding: 16px; } }
+@media (max-width: 800px) { .lbc-school-grid { grid-template-columns: 1fr; } .lbc-school-section { padding-block: 56px; } .lbc-school-photo, .lbc-school-photo.classroom { height: 420px; } .lbc-school-diagram { max-width: 360px; } .lbc-school-grid > .lbc-school-diagram { order: 2; } }
+@media (max-width: 520px) { .lbc-school-benefits, .lbc-school-offerings, .lbc-school-responsibilities { grid-template-columns: 1fr; gap: 16px; } .lbc-school-photo, .lbc-school-photo.classroom { height: 340px; } .lbc-school-benefits li, .lbc-school-responsibilities article { padding: 22px; } .lbc-school-schedule { font-size: .8rem; } }

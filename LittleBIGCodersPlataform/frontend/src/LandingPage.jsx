@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./landing.css";
 import legacyContent from "./legacyContent.json";
 import { LegacyPage } from "./LegacyPage";
+import { SchoolPage } from "./SchoolPage";
 
 const asset = name => `/landing/${name}.webp`;
 function WhatsAppIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 11.6a8.6 8.6 0 0 1-12.8 7.5L3 20.5l1.4-4.6A8.6 8.6 0 1 1 20.5 11.6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="m8.2 7.5 1.4 2.3-.9 1c.7 1.6 1.8 2.7 3.5 3.4l1-.9 2.3 1.3c.3.2.4.5.2.8-.5.8-1.2 1.2-2 1.1-3.7-.5-6.8-3.5-7.2-7.1-.1-.8.3-1.5 1-2 .3-.2.5-.2.7.1Z" fill="currentColor" /></svg>; }
@@ -89,27 +90,15 @@ export function LandingPage() {
       </section></div>
       <div className="lbc-subject-strip"><div className="lbc-container">{legacyContent.symbols.map((src, index) => <img key={src} src={src} alt={["Pensamento Computacional", "Programação", "Robótica", "Jogos e criatividade"][index]} width="64" height="64" />)}</div></div>
 
-      <div className="lbc-why-band"><section className="lbc-why lbc-container" id="por-que" aria-labelledby="why-title"><div className="lbc-section-heading"><h2 id="why-title">Por que aprender<br /><span>Computação?</span></h2></div><div className="lbc-why-grid"><div className="lbc-why-image"><img src={asset("why-computing")} alt="Estudante aprendendo Computação com um projeto de robótica" width="1800" height="1000" loading="lazy" /></div><div className="lbc-why-copy"><span className="lbc-large-symbol" aria-hidden="true">&lt;/&gt;</span><h3>Produzir tecnologia.<br />Além de consumi-la.</h3><p>A aprendizagem de Computação torna os jovens capazes de produzir tecnologia, além de consumi-la de maneira consciente!</p><a className="lbc-text-link" href="#/porque">Saiba mais <Arrow diagonal /></a></div></div></section></div>
+      <div className="lbc-why-band"><section className="lbc-why lbc-container" id="por-que" aria-labelledby="why-title"><div className="lbc-section-heading"><h2 id="why-title">Por que aprender<br /><span>Computação?</span></h2></div><div className="lbc-why-grid"><div className="lbc-why-image"><img src={asset("why-computing")} alt="Estudante aprendendo Computação com um projeto de robótica" width="1800" height="1000" loading="lazy" /></div><div className="lbc-why-copy"><h3>Produzir tecnologia.<br />Além de consumi-la.</h3><p>A aprendizagem de Computação torna os jovens capazes de produzir tecnologia, além de consumi-la de maneira consciente!</p><a className="lbc-text-link" href="#/porque">Saiba mais <Arrow diagonal /></a></div></div></section></div>
 
       <section className="lbc-approach" id="abordagem" aria-labelledby="approach-title"><div className="lbc-container lbc-approach-grid"><div className="lbc-approach-art"><img src={asset("approach")} alt="Programação, robótica, jogos, eletrônica e inteligência artificial conectados ao Pensamento Computacional" width="687" height="671" loading="lazy" /></div><div><h2 id="approach-title">Uma abordagem baseada em <span>conceitos e contextos.</span></h2><p>Currículo abrangente para a aprendizagem de Computação no Ensino Fundamental I e II (estudantes entre 7 e 14 anos). Conteúdos que preparam os estudantes para um mundo repleto de tecnologia.</p><ul className="lbc-subjects">{subjects.map((subject, index) => <li key={subject}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{subject}</li>)}</ul><a className="lbc-text-link" href="#/abordagem">Conheça a nossa abordagem <Arrow diagonal /></a></div></div></section></>}
 
 
 
-      {page !== "inicio" && <LegacyPage name={page} />}
+      {page === "escolas" ? <SchoolPage /> : page !== "inicio" && <LegacyPage name={page} />}
 
-      {page === "escolas" && <section className="lbc-curriculum" id="curriculo" aria-labelledby="curriculum-title"><div className="lbc-container">
 
-        <h2 id="curriculum-title">Computação já é <span>responsabilidade curricular</span></h2>
-        <ol className="lbc-curriculum-timeline">
-          <li><span>2022</span><h3>BNCC Computação</h3></li>
-          <li><span>2023</span><h3>Política Nacional de Educação Digital</h3></li>
-          <li><span>2025</span><h3>Educação Digital e Midiática</h3></li>
-        </ol>
-        <h3 className="lbc-curriculum-axis-title">Três eixos da BNCC Computação</h3>
-        <ul className="lbc-curriculum-axes">{[["🧠", "Pensamento Computacional"], ["💻", "Mundo Digital"], ["🤝", "Cultura Digital"]].map(([icon, name]) => <li key={name}><span aria-hidden="true">{icon}</span>{name}</li>)}</ul>
-        <div className="lbc-curriculum-message"><p>Adequação não precisa ser burocracia: pode virar diferencial pedagógico.</p><p>A Little BIG Coders ajuda a transformar a exigência em uma proposta completa.</p></div>
-        <p className="lbc-curriculum-sources">Fontes: Resolução CNE/CEB nº 1/2022; Lei nº 14.533/2023; Resolução CNE/CEB nº 2/2025.</p>
-      </div></section>}
 
       <div className="lbc-contact-band"><section className="lbc-contact lbc-container" id="contato" aria-labelledby="contact-title"><div><p className="lbc-contact-intro">Vamos adorar te conhecer melhor e oferecer uma proposta.</p><h2 id="contact-title">Agende uma conversa<br /><span>sem compromisso.</span></h2></div><div className="lbc-contact-details"><a className="lbc-contact-email" href="mailto:littlebigcoders@gmail.com">littlebigcoders@gmail.com <Arrow diagonal /></a><a className="lbc-contact-whatsapp" href="https://wa.me/5575981223074" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /> Fale conosco</a><div className="lbc-socials">{[["https://www.facebook.com/littleBIGcoders", "Facebook"], ["https://www.instagram.com/littlebigcoders/", "Instagram"], ["https://www.youtube.com/channel/UC7KWerMUGfo_sCzjQq429mA", "YouTube"]].map(([href, label], index) => <a key={label} href={href} aria-label={label} target="_blank" rel="noopener noreferrer"><img src={legacyContent.socials[index]} alt="" width="40" height="40" /></a>)}</div></div></section></div>
     </main>
