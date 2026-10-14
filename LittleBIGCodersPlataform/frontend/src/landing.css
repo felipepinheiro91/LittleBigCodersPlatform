@@ -238,3 +238,39 @@
 .lbc-testimonial-unavailable { background: #e9e0f2; border: 1px solid #6c4a9750; padding: 32px; border-radius: 14px; max-width: 780px; margin: auto; }
 .lbc-testimonial-unavailable > span { display: grid; place-items: center; width: 56px; height: 56px; background: var(--lbc-purple); color: white; border-radius: 50%; }
 .lbc-testimonial-unavailable p { font-size: .95rem !important; line-height: 1.8; }
+
+.lbc-carousel { width: min(100%, 960px); min-width: 0; margin-inline: auto; }
+.lbc-carousel-viewport { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; border-radius: 14px; }
+.lbc-carousel-viewport::-webkit-scrollbar { display: none; }
+.lbc-carousel-viewport:focus-visible { outline: 3px solid var(--lbc-purple); outline-offset: 5px; }
+.lbc-carousel-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; display: flex; justify-content: center; align-items: center; }
+.lbc-carousel-slide > img, .lbc-carousel-slide > figure img { width: 100%; height: 460px; object-fit: contain; border-radius: 12px; }
+.lbc-carousel-slide > figure { width: 100%; margin: 0; background: #ffffff25; border-radius: 14px; padding: 16px; }
+.lbc-carousel-slide figcaption { text-align: center; font-size: .9rem; padding: 16px 8px 4px; }
+.lbc-carousel-controls { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 20px; }
+.lbc-carousel-controls button { min-width: 44px; min-height: 44px; border: 1px solid currentColor; border-radius: 50%; background: #ffffff25; font-size: 1.3rem; cursor: pointer; }
+.lbc-carousel-controls button:hover:not(:disabled) { background: #ffffff55; }
+.lbc-carousel-controls button:disabled { opacity: .35; cursor: default; }
+.lbc-carousel-controls span { font-size: .85rem; min-width: 65px; text-align: center; font-variant-numeric: tabular-nums; }
+.lbc-carousel.is-cards { max-width: 720px; }
+.lbc-carousel.is-cards .lbc-carousel-slide { align-items: stretch; }
+.lbc-carousel.is-cards article { width: 100%; }
+.lbc-carousel .lbc-course > img { height: 320px; object-fit: contain; }
+.lbc-legacy-abordagem .lbc-carousel-viewport:focus-visible { outline-color: var(--lbc-yellow); }
+@media (max-width: 520px) { .lbc-carousel-slide > img, .lbc-carousel-slide > figure img { height: 300px; } .lbc-carousel .lbc-course > img { height: 220px; } }
+.lbc-landing .lbc-inline-reference { color: inherit; font: inherit; text-decoration: underline; text-decoration-color: #33354d50; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.lbc-landing .lbc-inline-reference:hover { text-decoration-color: currentColor; }
+
+.lbc-legacy-porque, .lbc-legacy-abordagem { padding-top: 0; }
+.lbc-tone-blue { --section-background: #aaddf7; --section-text: #33354d; --section-focus: #513472; }
+.lbc-tone-lilac { --section-background: #d1c4e0; --section-text: #33354d; --section-focus: #513472; }
+.lbc-tone-yellow { --section-background: #ebb24d; --section-text: #33354d; --section-focus: #513472; }
+.lbc-tone-cyan { --section-background: #1cbdd5; --section-text: #173346; --section-focus: #513472; }
+.lbc-tone-navy { --section-background: #33354d; --section-text: #ffffff; --section-focus: #ebb24d; }
+.lbc-tone-purple { --section-background: #6c4a97; --section-text: #ffffff; --section-focus: #ebb24d; }
+.lbc-legacy-section[class*="lbc-tone-"] { background: var(--section-background); color: var(--section-text); border-top: 0; padding-block: 64px; }
+.lbc-legacy-section[class*="lbc-tone-"] .lbc-legacy-topic { background: #f6f2fa; color: #33354d; border-color: transparent; }
+.lbc-legacy-section[class*="lbc-tone-"] .lbc-inline-reference { text-decoration-color: currentColor; }
+.lbc-legacy-section[class*="lbc-tone-"] a:focus-visible, .lbc-legacy-section[class*="lbc-tone-"] button:focus-visible, .lbc-legacy-section[class*="lbc-tone-"] .lbc-carousel-viewport:focus-visible { outline-color: var(--section-focus); }
+.lbc-tone-navy .lbc-legacy-links .lbc-button-dark, .lbc-tone-purple .lbc-legacy-links .lbc-button-dark { background: #ebb24d; color: #33354d; }
+@media (max-width: 520px) { .lbc-legacy-section[class*="lbc-tone-"] { padding-block: 40px; } }

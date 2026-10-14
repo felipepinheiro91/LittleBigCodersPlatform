@@ -420,21 +420,12 @@
         "images": [
           "/landing/legacy/e63dba2ea99c997a.webp"
         ],
-        "links": [
-          {
-            "text": "estudo da",
-            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
-          },
-          {
-            "text": "Associação das Empresas de Tecnologia da Informação e Comunicação (TIC) e de Tecnologias Digitais",
-            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
-          },
-          {
-            "text": "(BRASSCOM)",
-            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
-          }
-        ],
-        "embeds": []
+        "links": [],
+        "embeds": [],
+        "inlineLink": {
+          "text": "estudo da Associação das Empresas de Tecnologia da Informação e Comunicação (TIC) e de Tecnologias Digitais (BRASSCOM)",
+          "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
+        }
       },
       {
         "paragraphs": [
@@ -444,13 +435,12 @@
         "images": [
           "/landing/legacy/b7ed9e5fc9195491.webp"
         ],
-        "links": [
-          {
-            "text": "Center For the Future of Work e Cognizant",
-            "href": "https://www.cognizant.com/future-of-work"
-          }
-        ],
-        "embeds": []
+        "links": [],
+        "embeds": [],
+        "inlineLink": {
+          "text": "Center For the Future of Work e Cognizant",
+          "href": "https://www.cognizant.com/future-of-work"
+        }
       },
       {
         "paragraphs": [
@@ -482,8 +472,7 @@
           "Preparando os estudantes para um mundo repleto de tecnologia!"
         ],
         "images": [
-          "/landing/legacy/ceba01718b3e3e22.webp",
-          "/landing/legacy/f87275f770af9762.webp"
+          "/landing/legacy/ceba01718b3e3e22.webp"
         ],
         "links": [],
         "embeds": []
