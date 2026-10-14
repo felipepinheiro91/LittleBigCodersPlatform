@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
-.lbc-landing { --lbc-ink: #232329; --lbc-cyan: #00bcd4; --lbc-purple: #844691; --lbc-lilac: #d1c4e0; color: var(--lbc-ink); background: #f9f9f9; font-family: 'DM Sans', sans-serif; line-height: 1.65; }
+.lbc-landing { --lbc-ink: #33354d; --lbc-cyan: #1cbdd5; --lbc-purple: #6c4a97; --lbc-lilac: #d1c4e0; --lbc-yellow: #ebb24d; --lbc-blue: #aaddf7; color: var(--lbc-ink); background: var(--lbc-lilac); font-family: 'DM Sans', sans-serif; line-height: 1.65; }
 .lbc-landing *, .lbc-landing *::before, .lbc-landing *::after { box-sizing: border-box; }
 .lbc-landing h1, .lbc-landing h2, .lbc-landing h3 { font-family: 'Manrope', sans-serif; font-weight: 800; letter-spacing: -.045em; line-height: 1.12; margin: 0; }
 .lbc-landing h2 { font-size: clamp(2.2rem, 4.1vw, 3.75rem); }
@@ -108,3 +108,64 @@
 .lbc-home-support h3 { font-size: 1.75rem; }
 .lbc-home-support p { color: #66636e; margin-block: 20px; max-width: 460px; }
 @media (max-width: 520px) { .lbc-home-support { grid-template-columns: 1fr; gap: 28px; } .lbc-home-support h3 { font-size: 1.5rem; } }
+
+/* Palette and broad color fields inspired by the commercial proposal. */
+.lbc-header { background: #33354dfa; color: white; border-bottom-color: #ffffff1f; }
+.lbc-nav a:hover { color: #aaddf7; }
+.lbc-login { background: var(--lbc-yellow); color: var(--lbc-ink); }
+.lbc-login:hover { background: #fcc152; }
+.lbc-landing a:focus-visible, .lbc-landing button:focus-visible { outline-color: #008798; }
+.lbc-header a:focus-visible, .lbc-header button:focus-visible, .lbc-hero a:focus-visible, .lbc-approach a:focus-visible, .lbc-contact a:focus-visible, .lbc-footer a:focus-visible { outline-color: var(--lbc-yellow); }
+.lbc-hero-band { background: var(--lbc-ink); color: white; position: relative; overflow: hidden; }
+.lbc-hero-band::before { content: ''; position: absolute; width: 660px; height: 760px; border-radius: 50%; right: -220px; top: -80px; background: #6c4a9745; pointer-events: none; }
+.lbc-hero { position: relative; }
+.lbc-hero h1 > span { color: var(--lbc-yellow); }
+.lbc-hero .lbc-eyebrow { color: var(--lbc-blue); }
+.lbc-hero-description, .lbc-hero-note { color: #ddd4e9; }
+.lbc-hero-note strong { color: white; }
+.lbc-note-icon { color: var(--lbc-cyan); border-color: #b6a4d569; }
+.lbc-hero .lbc-button-dark { background: var(--lbc-cyan); color: #163246; }
+.lbc-hero .lbc-button-dark:hover { background: #62d4e4; }
+.lbc-hero .lbc-text-link { color: white; }
+.lbc-photo-frame { border-radius: 96px 16px 96px 16px; box-shadow: 14px 14px 0 #1cbdd5; }
+.lbc-photo-caption { color: #e6dbee; border-top-color: #d1c4e045; margin-top: 34px; }
+.lbc-photo-caption > span { color: var(--lbc-yellow); }
+.lbc-subject-strip { background: var(--lbc-cyan); border: 0; color: #173346; }
+.lbc-subject-strip span span { color: #33354d; }
+.lbc-why-band { background: var(--lbc-yellow); }
+.lbc-why h2 span { color: #513472; }
+.lbc-why-copy p { color: #3f3d4d; }
+.lbc-large-symbol { color: #513472; }
+.lbc-why-image { border-radius: 14px 64px 14px 14px; box-shadow: -10px 10px 0 #33354d; }
+.lbc-why-copy .lbc-text-link { border-bottom: 2px solid #6c4a97; }
+.lbc-approach { background: var(--lbc-purple); color: white; }
+.lbc-approach h2 span { color: var(--lbc-yellow); }
+.lbc-approach .lbc-eyebrow, .lbc-approach p:not(.lbc-eyebrow) { color: #eee4f7; }
+.lbc-approach-art { padding: 14px; background: var(--lbc-lilac); border-radius: 50%; }
+.lbc-subjects li { border-bottom-color: #d1c4e050; }
+.lbc-subjects li span { color: var(--lbc-yellow); }
+.lbc-approach .lbc-text-link { color: white; }
+.lbc-schools-band { background: var(--lbc-blue); }
+.lbc-schools h2 span { color: #513472; }
+.lbc-schools .lbc-section-heading > p:last-child:not(.lbc-eyebrow), .lbc-school-details p, .lbc-school-art > span { color: #30475c; }
+.lbc-school-art { background: #e2f3fc; border: 1px solid #ffffff80; border-radius: 14px 14px 64px 14px; }
+.lbc-school-details article { border-bottom-color: #33354d36; }
+.lbc-detail-number { color: #513472; font-weight: 700; }
+.lbc-homeschool { background: var(--lbc-lilac); }
+.lbc-homeschool h2 span { color: #513472; }
+.lbc-home-heading > p, .lbc-course-heading p, .lbc-course > p, .lbc-home-support p { color: #443952; }
+.lbc-course-heading, .lbc-home-support { border-top-color: #6c4a9750; }
+.lbc-courses { gap: 24px; }
+.lbc-course { background: #e9e0f2; padding: 16px 16px 20px; border-radius: 14px; border-bottom: 4px solid #6c4a97; }
+.lbc-course:nth-child(2) { border-bottom-color: #008798; }
+.lbc-course:nth-child(3) { border-bottom-color: #996615; }
+.lbc-course-meta { color: #513472; }
+.lbc-contact-band { background: var(--lbc-ink); color: white; }
+.lbc-contact h2 span { color: var(--lbc-yellow); }
+.lbc-contact .lbc-eyebrow { color: var(--lbc-blue); }
+.lbc-contact-email { border-bottom-color: #d1c4e050; }
+.lbc-contact-phone { color: #e2d8ee; }
+.lbc-socials a { color: var(--lbc-blue); }
+.lbc-footer { background: #26273b; border-top: 1px solid #d1c4e025; }
+@media (max-width: 800px) { .lbc-nav.is-open { background: var(--lbc-ink); color: white; border-bottom: 2px solid var(--lbc-cyan); } .lbc-menu-toggle { color: white; border-color: #d1c4e060; } .lbc-photo-frame { box-shadow: 8px 8px 0 #1cbdd5; } }
+@media (max-width: 520px) { .lbc-photo-frame { border-radius: 64px 12px 64px 12px; } .lbc-course { padding: 14px 14px 20px; } .lbc-why-image { box-shadow: -6px 6px 0 #33354d; } }
