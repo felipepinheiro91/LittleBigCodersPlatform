@@ -3,6 +3,7 @@ import "./landing.css";
 import legacyContent from "./legacyContent.json";
 import { LegacyPage } from "./LegacyPage";
 import { SchoolPage } from "./SchoolPage";
+import { ContactPage } from "./ContactPage";
 
 const asset = name => `/landing/${name}.webp`;
 function WhatsAppIcon() { return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 11.6a8.6 8.6 0 0 1-12.8 7.5L3 20.5l1.4-4.6A8.6 8.6 0 1 1 20.5 11.6Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" /><path d="m8.2 7.5 1.4 2.3-.9 1c.7 1.6 1.8 2.7 3.5 3.4l1-.9 2.3 1.3c.3.2.4.5.2.8-.5.8-1.2 1.2-2 1.1-3.7-.5-6.8-3.5-7.2-7.1-.1-.8.3-1.5 1-2 .3-.2.5-.2.7.1Z" fill="currentColor" /></svg>; }
@@ -96,11 +97,11 @@ export function LandingPage() {
 
 
 
-      {page === "escolas" ? <SchoolPage /> : page !== "inicio" && <LegacyPage name={page} />}
+      {page === "escolas" ? <SchoolPage /> : page === "contato" ? <ContactPage whatsappIcon={<WhatsAppIcon />} /> : page !== "inicio" && <LegacyPage name={page} />}
 
 
 
-      <div className="lbc-contact-band"><section className="lbc-contact lbc-container" id="contato" aria-labelledby="contact-title"><div><p className="lbc-contact-intro">Vamos adorar te conhecer melhor e oferecer uma proposta.</p><h2 id="contact-title">Agende uma conversa<br /><span>sem compromisso.</span></h2></div><div className="lbc-contact-details"><a className="lbc-contact-email" href="mailto:littlebigcoders@gmail.com">littlebigcoders@gmail.com <Arrow diagonal /></a><a className="lbc-contact-whatsapp" href="https://wa.me/5575981223074" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /> Fale conosco</a><div className="lbc-socials">{[["https://www.facebook.com/littleBIGcoders", "Facebook"], ["https://www.instagram.com/littlebigcoders/", "Instagram"], ["https://www.youtube.com/channel/UC7KWerMUGfo_sCzjQq429mA", "YouTube"]].map(([href, label], index) => <a key={label} href={href} aria-label={label} target="_blank" rel="noopener noreferrer"><img src={legacyContent.socials[index]} alt="" width="40" height="40" /></a>)}</div></div></section></div>
+      {page !== "contato" && <div className="lbc-contact-band"><section className="lbc-contact lbc-container" id="contato" aria-labelledby="contact-title"><div><p className="lbc-contact-intro">Vamos adorar te conhecer melhor e oferecer uma proposta.</p><h2 id="contact-title">Agende uma conversa<br /><span>sem compromisso.</span></h2></div><div className="lbc-contact-details"><a className="lbc-contact-email" href="mailto:littlebigcoders@gmail.com">littlebigcoders@gmail.com <Arrow diagonal /></a><a className="lbc-contact-whatsapp" href="https://wa.me/5575981223074" target="_blank" rel="noopener noreferrer"><WhatsAppIcon /> Fale conosco</a><div className="lbc-socials">{[["https://www.facebook.com/littleBIGcoders", "Facebook"], ["https://www.instagram.com/littlebigcoders/", "Instagram"], ["https://www.youtube.com/channel/UC7KWerMUGfo_sCzjQq429mA", "YouTube"]].map(([href, label], index) => <a key={label} href={href} aria-label={label} target="_blank" rel="noopener noreferrer"><img src={legacyContent.socials[index]} alt="" width="40" height="40" /></a>)}</div></div></section></div>}
     </main>
     <footer className="lbc-footer"><div className="lbc-container"><a className="lbc-brand" href="#/" aria-label="Voltar ao início"><img src={asset("logo")} alt="Little BIG Coders" width="405" height="176" loading="lazy" /></a><p>Copyright © 2022 LittleBIGCoders<br />Todos os direitos reservados.<br />CNPJ: 53.739.987/0001-27</p><a href="#login">Já é aluno(a) ou parceiro(a)? <strong>Login <Arrow /></strong></a></div></footer>
   </div>;

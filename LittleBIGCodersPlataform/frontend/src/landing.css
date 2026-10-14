@@ -327,3 +327,10 @@
 @media (max-width: 1000px) { .lbc-school-grid { gap: 32px; } .lbc-school-reasons { grid-template-columns: 1fr; gap: 12px; } .lbc-school-reasons li { padding: 16px; } }
 @media (max-width: 800px) { .lbc-school-grid { grid-template-columns: 1fr; } .lbc-school-section { padding-block: 56px; } .lbc-school-photo, .lbc-school-photo.classroom { height: 420px; } .lbc-school-diagram { max-width: 360px; } .lbc-school-grid > .lbc-school-diagram { order: 2; } }
 @media (max-width: 520px) { .lbc-school-benefits, .lbc-school-offerings, .lbc-school-responsibilities { grid-template-columns: 1fr; gap: 16px; } .lbc-school-photo, .lbc-school-photo.classroom { height: 340px; } .lbc-school-benefits li, .lbc-school-responsibilities article { padding: 22px; } .lbc-school-schedule { font-size: .8rem; } }
+.lbc-contact-page h1 span { color: var(--lbc-yellow); }
+.lbc-contact-page .lbc-school-schedule { justify-content: center; gap: 12px; }
+.lbc-contact-page .lbc-school-schedule svg { flex-shrink: 0; }
+.lbc-contact-page-details { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 56px; padding-top: 24px; border-top: 1px solid #d1c4e040; }
+.lbc-contact-page-details .lbc-socials { margin-top: 0; }
+.lbc-contact-page-details > a { overflow-wrap: anywhere; }
+@media (max-width: 520px) { .lbc-contact-page-details { flex-direction: column; align-items: start; } .lbc-contact-page .lbc-school-schedule { text-align: left; } }
