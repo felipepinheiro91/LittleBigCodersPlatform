@@ -1,0 +1,624 @@
+{
+  "familias": {
+    "title": "HOMESCHOOL",
+    "source": "https://www.littlebigcoders.com/homeschool",
+    "blocks": [
+      {
+        "paragraphs": [
+          "Homeschool com confiança",
+          "Sabemos que o homeschooling é uma oportunidade para os pais darem a seus filhos a educação que eles precisam para ter sucesso. Com a Little BIG Coders você pode introduzir a Computação como um tópico regular de estudos, respeitando o ritmo de aprendizagem e os interesses pessoais dos seus filhos."
+        ],
+        "images": [
+          "/landing/legacy/13fce97db02729c0.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Com os nossos materiais e a nossa plataforma de ensino, você garante que seus filhos recebam uma educação excepcional sem que você tenha que liderar todas as aulas. Todos os materiais promovem Educação em Computação em casa, usando livros didáticos, videoaulas, jogos e muito mais!"
+        ],
+        "images": [
+          "/landing/legacy/4e70ee254ae3e8d3.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Nossa abordagem de ensino para o homeschool envolve uma Trilha de Aprendizagem inicial e o Acompanhamento individual",
+          "Trilha de aprendizagem",
+          "Três materiais que introduzem o estudante ao universo da Computação."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Primeiros Passos na Computação",
+          "Livro para desenvolver habilidades associadas ao letramento digital e Pensamento Computacional. Indicado para crianças a partir dos 7 anos ou que já estejam com o processo de alfabetização bem encaminhado.",
+          "Algoritmos e Programação",
+          "Livro para desenvolver a lógica e a programação de computadores, por meio da criação de jogos e animações, com a plataforma Scratch, desenvolvida pelo Massachusetts Institute of Technology - MIT. Indicado para crianças a partir dos 8 anos de idade.",
+          "Aprender para Criar",
+          "Livro que trabalha eletrônica e robótica com Arduino. Os estudantes conhecem os principais componentes eletrônicos e desenvolvem circuitos que possam ser programados. Indicado para crianças a partir de 10 anos ou que já tenham completado o curso de programação."
+        ],
+        "images": [
+          "/landing/legacy/6b564e0bfbd97bfd.webp",
+          "/landing/legacy/649d87815eb327b3.webp",
+          "/landing/legacy/8e7124900e8ad67d.webp"
+        ],
+        "links": [
+          {
+            "text": "SAIBA MAIS",
+            "href": "https://littlebigcoders.lojavirtuolpro.com/primeiros-passos-na-computacao/p"
+          },
+          {
+            "text": "SAIBA MAIS",
+            "href": "https://littlebigcoders.lojavirtuolpro.com/algoritmos-e-programacao-para-criancas/p"
+          },
+          {
+            "text": "SAIBA MAIS",
+            "href": "https://littlebigcoders.lojavirtuolpro.com/aprender-para-criar---projetos-de-eletronica-com-arduino/p"
+          }
+        ],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Clube da Computação",
+          "Todos os estudantes podem participar do nosso clube, com encontros mensais, que abordam temas variados dentro do universo da Computação. Uma oportunidade para aprender e interagir com crianças de todo o Brasil."
+        ],
+        "images": [
+          "/landing/legacy/b83187823487d906.webp",
+          "/landing/legacy/a06bef658e2e1eb4.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Estamos em todo o Brasil",
+          "Famílias de todo o país estão introduzindo Computação como um tópico regular de estudos. Nossos materiais estão em todo lugar!"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [],
+        "images": [],
+        "links": [],
+        "embeds": [],
+        "gallery": [
+          {
+            "caption": "Fernanda e Davi, Tramandaí - RS",
+            "src": "/landing/legacy/3e33363d4b8e9c58.webp"
+          },
+          {
+            "caption": "Tito, Guarapari - ES",
+            "src": "/landing/legacy/9b6f7a1f8f3d9ae6.webp"
+          },
+          {
+            "caption": "Súzan, Teresina - PI",
+            "src": "/landing/legacy/0cc508f2c782304f.webp"
+          },
+          {
+            "caption": "Benjamin e Samuel, Atibaia - SP",
+            "src": "/landing/legacy/4c91d34da716a276.webp"
+          },
+          {
+            "caption": "Samara, Porto da Folha - SE",
+            "src": "/landing/legacy/dd7300302b885a76.webp"
+          },
+          {
+            "caption": "Pedro e Gigi, Lauro de Freitas - BA",
+            "src": "/landing/legacy/a3ef81468263b91f.webp"
+          },
+          {
+            "caption": "Marcos, São Paulo  - SP",
+            "src": "/landing/legacy/7b63516c0fd68886.webp"
+          },
+          {
+            "caption": "Lucas, Rio de Janeiro - RJ",
+            "src": "/landing/legacy/acb5f35d7eaf7e1d.webp"
+          },
+          {
+            "caption": "Julius, Brasília - DF",
+            "src": "/landing/legacy/2be8579517e148bc.webp"
+          },
+          {
+            "caption": "João, Feira de Santana - BA",
+            "src": "/landing/legacy/da0a4464ada8b7cd.webp"
+          },
+          {
+            "caption": "Guilherme e João Pedro, Brasília - DF",
+            "src": "/landing/legacy/04dfd4fa9c07cd11.webp"
+          },
+          {
+            "caption": "Daniel, Foz do Iguaçu - PR",
+            "src": "/landing/legacy/c41f547346d7a814.webp"
+          },
+          {
+            "caption": "Clara e Michel, Canela - RS",
+            "src": "/landing/legacy/8edd1420037f0769.webp"
+          },
+          {
+            "caption": "Isac, Vitória - ES",
+            "src": "/landing/legacy/a7f52ee7e14746df.webp"
+          },
+          {
+            "caption": "Pedro, Lauro de Freitas - BA",
+            "src": "/landing/legacy/b78fbfec90b13b02.webp"
+          },
+          {
+            "caption": "Caleb, Guarapuava - PR",
+            "src": "/landing/legacy/eeb02eca2aa40b75.webp"
+          },
+          {
+            "caption": "Alice, Feira de Santana - BA",
+            "src": "/landing/legacy/2ec61ae0bb3cf6d6.webp"
+          }
+        ]
+      },
+      {
+        "paragraphs": [
+          "Depoimentos"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [],
+        "images": [],
+        "links": [],
+        "embeds": [
+          "https://player.vimeo.com/video/701373240?h=fd4561ed39&badge=0&autopause=0&player_id=0&app_id=58479"
+        ],
+        "embedUnavailable": true
+      }
+    ]
+  },
+  "escolas": {
+    "title": "ESCOLAS",
+    "source": "https://www.littlebigcoders.com/escolas",
+    "blocks": [
+      {
+        "paragraphs": [
+          "Computação integrada ao currículo da sua escola. Com conexão à BNCC de computação."
+        ],
+        "images": [
+          "/landing/legacy/aa59cf5a9763ce7c.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Abordagem completa para o ensino de Computação no Ensino Fundamental I e II"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [],
+        "images": [
+          "/landing/legacy/8d1eef736b6379a4.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Material Didático",
+          "Livro impresso e Plataforma com conteúdo digital com videoaulas, jogos e atividades. Os estudantes aprendem na sala de aula e em casa!",
+          "Assessoria",
+          "Assessoria pedagógica, para implantação e continuidade do projeto. Reuniões regulares para auxílio no planejamento e condução das aulas. Constante diálogo com a sua escola para trilhar um caminho consistente para a formação dos estudantes."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [],
+        "images": [],
+        "links": [
+          {
+            "text": "SEJA UMA ESCOLA PARCEIRA",
+            "href": "#/contato"
+          }
+        ],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Educação em Computação com propósito e conteúdo",
+          "Conhecimentos como saber utilizar um computador, saber programar, conhecer sobre inteligência artificial, os impactos da tecnologia na sociedade, dentre outros, são fundamentais para a vida moderna. Com a nossa abordagem o estudante é desafiado a construir soluções para problemas dos mais variados tipos. Quando isso acontece eles exploram novos conhecimento e desenvolvem competências essenciais para a vida!"
+        ],
+        "images": [
+          "/landing/legacy/899c7aa411c964a1.webp",
+          "/landing/legacy/88b3547ed8227a4a.webp",
+          "/landing/legacy/6665eb430f70f943.webp",
+          "/landing/legacy/ba69acc58dca1f28.webp",
+          "/landing/legacy/ef049ddf3196e6c1.webp",
+          "/landing/legacy/8f508c07994cb834.webp",
+          "/landing/legacy/3bea7cf690b8ff74.webp",
+          "/landing/legacy/a7dccd50503627e9.webp",
+          "/landing/legacy/7ba985d17e807f51.webp"
+        ],
+        "links": [
+          {
+            "text": "SAIBA MAIS",
+            "href": "#/abordagem"
+          }
+        ],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "O Ensino de Computação já é parte das transformações do cenário educacional no Brasil",
+          "O ensino de Computação nas escolas já é uma realidade em países como Alemanha, França, Inglaterra, Estados Unidos, Finlândia, Israel, Japão, dentre outros. No Brasil, esta já é uma discussão em curso. O Conselho Nacional de Educação (CNE) CNE já aprovou as normas sobre Computação na Educação Básica, complemento à Base Nacional Comum Curricular (BNCC). Oferecer Computação na sua escola é estar alinhado com os novos rumos da educação no Brasil e no Mundo, considerando a aceleração exponencial das transformações tecnológicas e seu impacto no cenário educacional."
+        ],
+        "images": [],
+        "links": [
+          {
+            "text": "SAIBA MAIS",
+            "href": "#/porque"
+          }
+        ],
+        "embeds": []
+      }
+    ]
+  },
+  "sobre": {
+    "title": "SOBRE NÓS",
+    "source": "https://www.littlebigcoders.com/sobre-n%C3%B3s",
+    "blocks": [
+      {
+        "paragraphs": [],
+        "images": [
+          "/landing/legacy/4f1e5a4c30b04c76.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "O que é Little BIG Coders?"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Little BIG Coders é um projeto de Educação em Computação para crianças e adolescentes. Criado em 2018 com o objetivo de fomentar o desenvolvimento do Pensamento Computacional, que é um processo cognitivo focado na resolução de problemas. A nossa abordagem de ensino é inspirada nas iniciativas de ensino bem-sucedidas e em pesquisas nacionais e internacionais da área de Educação em Computação. Nossa missão de vida é oferecer experiências de aprendizagem com conteúdo e propósito, onde os estudantes aprendem Computação em contextos simples, divertidos e acessíveis."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      }
+    ]
+  },
+  "contato": {
+    "title": "CONTATO",
+    "source": "https://www.littlebigcoders.com/contato",
+    "blocks": [
+      {
+        "paragraphs": [],
+        "images": [
+          "/landing/legacy/d29f877cd7435561.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Fale com a gente"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Vamos adorar te conhecer melhor e oferecer uma proposta."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [],
+        "images": [],
+        "links": [
+          {
+            "text": "littlebigcoders@gmail.com",
+            "href": "mailto:littlebigcoders@gmail.com"
+          },
+          {
+            "text": "ENVIE UMA MENSAGEM PARA NOSSO WHATSAPP",
+            "href": "http://api.whatsapp.com/send?1=pt_BR&phone=5575991947515"
+          }
+        ],
+        "embeds": []
+      }
+    ]
+  },
+  "porque": {
+    "title": "POR QUE APRENDER COMPUTAÇÃO?",
+    "source": "https://www.littlebigcoders.com/por-que-aprender-computa%C3%A7%C3%A3o",
+    "blocks": [
+      {
+        "paragraphs": [
+          "Por que aprender Computação?"
+        ],
+        "images": [
+          "/landing/legacy/bb8451405bff4d46.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Vivemos rodeados pela tecnologia",
+          "A Computação está entranhada em nosso dia a dia com o uso da Internet, dos smartphones e de diversos aparelhos tecnológicos. Grande parte das tecnologias atuais só se tornou possível graças ao advento da Ciência da Computação."
+        ],
+        "images": [
+          "/landing/legacy/c21d60d2752a7ae7.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Costumamos dizer que as crianças são fluentes com a tecnologia pois elas utilizam cada vez mais cedo dispositivos como smartphones e tablets, mas..."
+        ],
+        "images": [
+          "/landing/legacy/814251350e337a66.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "\"Fluência digital não é só a habilidade de usar o computador para conversar e navegar na Internet, mas a habilidade de projetar, criar e inventar novas mídias.\"",
+          "-Michel Resnick"
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Estudar Computação não é o mesmo que utilizar o computador livremente",
+          "Estudar Computação é entender como softwares e dispositivos tecnológicos são desenvolvidos. É utilizar o computador e a Computação como uma ferramenta para exercitar a criatividade e resolver problemas. Aprender Computação oferece uma nova perspectiva de mundo para as crianças e adolescentes."
+        ],
+        "images": [
+          "/landing/legacy/0c7d608e0607c10f.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Com este conhecimento, as crianças passam a consumir tecnologia de maneira consciente e tornam-se capazes de produzir tecnologia!"
+        ],
+        "images": [
+          "/landing/legacy/30413c7ab3064438.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Alta demanda por profissionais de tecnologia no Brasil",
+          "Segundo um estudo da Associação das Empresas de Tecnologia da Informação e Comunicação (TIC) e de Tecnologias Digitais (BRASSCOM) o Brasil tem uma  demanda de 797 mil profissionais de tecnologia até o ano de 2025. Esse número reflete o crescimento acelerado do setor de TIC e a urgente necessidade de que a formação profissional na área."
+        ],
+        "images": [
+          "/landing/legacy/e63dba2ea99c997a.webp"
+        ],
+        "links": [
+          {
+            "text": "estudo da",
+            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
+          },
+          {
+            "text": "Associação das Empresas de Tecnologia da Informação e Comunicação (TIC) e de Tecnologias Digitais",
+            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
+          },
+          {
+            "text": "(BRASSCOM)",
+            "href": "https://brasscom.org.br/demanda-de-talentos-em-tic-e-estrategia-%cf%83-tcem/"
+          }
+        ],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "A Computação está nas profissões do futuro",
+          "O  Center For the Future of Work e Cognizant lista as 21 profissões do Futuro. Todas as profissões envolvem uma série de conhecimentos referentes à tecnologia. Dentre as profissões listadas estão Analista de Big Data, Analista de Segurança da Informação Agente de Cyber Attack, Facilitador de TI, Técnico de saúde assistida por Inteligência Artificial , Analista de Quanttun Machine Learning, Gerente de Construção de Realidade Aumentada, dentre outras."
+        ],
+        "images": [
+          "/landing/legacy/b7ed9e5fc9195491.webp"
+        ],
+        "links": [
+          {
+            "text": "Center For the Future of Work e Cognizant",
+            "href": "https://www.cognizant.com/future-of-work"
+          }
+        ],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Conheça a nossa abordagem  para o ensino de Computação na sala de estar e na sala de aula."
+        ],
+        "images": [
+          "/landing/legacy/5971e0e18ae43db6.webp"
+        ],
+        "links": [
+          {
+            "text": "HOMESCHOOL",
+            "href": "#/familias"
+          },
+          {
+            "text": "ESCOLAS",
+            "href": "#/escolas"
+          }
+        ],
+        "embeds": []
+      }
+    ]
+  },
+  "abordagem": {
+    "title": "ABORDAGEM-LITTLEBIGCODERS",
+    "source": "https://www.littlebigcoders.com/abordagem-littlebigcoders",
+    "blocks": [
+      {
+        "paragraphs": [
+          "Preparando os estudantes para um mundo repleto de tecnologia!"
+        ],
+        "images": [
+          "/landing/legacy/ceba01718b3e3e22.webp",
+          "/landing/legacy/f87275f770af9762.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Um abordagem baseada em conceitos e contextos",
+          "Nossa abordagem de ensino trabalha uma série de conceitos da Computação utilizando contextos de aprendizagem diversos, que preparam os estudantes para um mundo repleto de tecnologia."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Programação",
+          "Conhecer conceitos da lógica de programação e desenvolver programas com linguagem visual e textual.",
+          "Eletrônica",
+          "Compreender aspectos fundamentais da eletrônica e criar dispositivos programados."
+        ],
+        "images": [
+          "/landing/legacy/2c455368ee43270d.webp",
+          "/landing/legacy/f53208547ae17380.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Robótica",
+          "Compreender como os robôs são desenvolvidos e aplicados para resolver problemas da sociedade.",
+          "Inteligência Artificial",
+          "Compreender o que é machine learning e como ela pode ser aplicada."
+        ],
+        "images": [
+          "/landing/legacy/e5a70d06d110987c.webp",
+          "/landing/legacy/2f0bdb4e4716396c.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Criação de sites",
+          "Desenvolver sites responsivos.",
+          "Ética e tecnologia",
+          "Refletir sobre aspectos legais e éticos da Computação na sociedade. Além de aprender boas práticas na Internet."
+        ],
+        "images": [
+          "/landing/legacy/ad24719f1193e5b7.webp",
+          "/landing/legacy/feae03b670177e52.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Desenvolvimento de jogos e animações",
+          "Desenvolver jogos e animações 2d.",
+          "Informática",
+          "Aprender a utilizar o computador e dispositivos de comunicação."
+        ],
+        "images": [
+          "/landing/legacy/66f6c33bc666d51a.webp",
+          "/landing/legacy/8169009362850236.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Foco no desenvolvimento do Pensamento Computacional"
+        ],
+        "images": [
+          "/landing/legacy/61545068e4d8817f.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "O Pensamento Computacional é a capacidade de resolver problemas a partir de conhecimentos e práticas da computação e inclui uma série de habilidades como abstração, generalização e decomposição. O Pensamento Computacional já é considerado um dos pilares fundamentais do intelecto humano, junto a leitura, a escrita e a aritmética. Diversos currículos de computação pelo mundo têm o Pensamento Computacional como um dos eixos de aprendizagem. Por isso, nossa abordagem de ensino privilegia a aquisição das habilidades associadas ao Pensamento Computacional."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Aprendizagem de conteúdos em espiral"
+        ],
+        "images": [
+          "/landing/legacy/0eba631a5721772d.webp"
+        ],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "A aprendizagem em espiral é uma abordagem de ensino-aprendizagem que tem como objetivo principal promover que as crianças retenham os conteúdos. Na abordagem em espiral os estudantes revisitam um tópico ou assunto em várias vezes ao longo dos anos. A complexidade do conteúdo abordado aumenta a cada vez que é revisto e os novos aprendizados têm relações com o aprendizado prévio. Assim, os estudantes progridem para uma compreensão mais aprofundada dos conteúdos. A Aprendizagem em Espiral é adotada por currículos de ciências em todo o mundo. Adotamos esta abordagem para promover o desenvolvimento do pensamento computacional e da aprendizagem de programação, presentes em todo o currículo."
+        ],
+        "images": [],
+        "links": [],
+        "embeds": []
+      },
+      {
+        "paragraphs": [
+          "Conheça a nossa abordagem  para o ensino de Computação na sala de estar e na sala de aula."
+        ],
+        "images": [
+          "/landing/legacy/794ae9cb0107c45f.webp"
+        ],
+        "links": [
+          {
+            "text": "HOMESCHOOL",
+            "href": "#/familias"
+          },
+          {
+            "text": "ESCOLAS",
+            "href": "#/escolas"
+          }
+        ],
+        "embeds": []
+      }
+    ]
+  },
+  "symbols": [
+    "/landing/legacy/61545068e4d8817f.webp",
+    "/landing/legacy/2c455368ee43270d.webp",
+    "/landing/legacy/e5a70d06d110987c.webp",
+    "/landing/legacy/66f6c33bc666d51a.webp"
+  ],
+  "socials": [
+    "/landing/legacy/7c14d527a91662a2.webp",
+    "/landing/legacy/4591d9eaf71c4e4f.webp",
+    "/landing/legacy/c6250476fd25baf4.webp"
+  ]
+}
