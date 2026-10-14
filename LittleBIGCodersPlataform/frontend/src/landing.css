@@ -177,3 +177,22 @@
 .lbc-nav a[aria-current="page"] { color: var(--lbc-yellow); }
 .lbc-page-content { animation: lbc-page-enter .35s ease-out; }
 @keyframes lbc-page-enter { from { opacity: .6; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.lbc-curriculum { background: var(--lbc-blue); padding: 0 0 90px; }
+.lbc-curriculum > .lbc-container { border-top: 1px solid #33354d36; padding-top: 64px; }
+.lbc-curriculum h2 { max-width: 940px; }
+.lbc-curriculum h2 span { color: #513472; }
+.lbc-curriculum-timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; list-style: none; margin: 38px 0; padding: 0; }
+.lbc-curriculum-timeline li { display: flex; gap: 20px; align-items: center; background: white; border-radius: 12px; padding: 28px 24px; box-shadow: 0 4px 0 #33354d15; }
+.lbc-curriculum-timeline li > span { color: #87427f; font-size: 2rem; font-weight: 800; }
+.lbc-curriculum-timeline h3 { font-size: 1rem; line-height: 1.45; letter-spacing: -.015em; }
+.lbc-curriculum-axis-title { background: #ad61a8; color: white; padding: 18px 24px; text-align: center; border-radius: 10px; font-size: 1.25rem !important; }
+.lbc-curriculum-axes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; list-style: none; margin: 20px 0 32px; padding: 0; }
+.lbc-curriculum-axes li { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px; background: var(--lbc-lilac); color: #513472; border-radius: 10px; font-weight: 600; }
+.lbc-curriculum-axes li > span { font-size: 1.5rem; }
+.lbc-curriculum-message { background: var(--lbc-yellow); padding: 30px; border-radius: 12px; text-align: center; font-size: 1.1rem; }
+.lbc-curriculum-message p + p { margin-top: 8px; font-weight: 600; }
+.lbc-curriculum-sources { margin-top: 24px !important; font-size: .72rem; color: #30475c; }
+@media (max-width: 1050px) { .lbc-curriculum-timeline li { flex-direction: column; align-items: start; gap: 10px; } }
+@media (max-width: 800px) { .lbc-curriculum { padding-bottom: 64px; } .lbc-curriculum > .lbc-container { padding-top: 44px; } .lbc-curriculum-timeline, .lbc-curriculum-axes { gap: 14px; } .lbc-curriculum-axes li { padding: 18px 12px; flex-direction: column; text-align: center; } }
+@media (max-width: 520px) { .lbc-curriculum-timeline, .lbc-curriculum-axes { grid-template-columns: 1fr; } .lbc-curriculum-timeline li { flex-direction: row; align-items: center; gap: 20px; padding: 22px; } .lbc-curriculum-axes li { flex-direction: row; justify-content: start; text-align: left; padding: 20px; } .lbc-curriculum-message { padding: 24px; text-align: left; font-size: 1rem; } }
