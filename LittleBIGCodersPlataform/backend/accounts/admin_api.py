@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models.deletion import ProtectedError
 from rest_framework import permissions, serializers, viewsets
 
-from content.models import Book, Chapter, Material, DidacticSequence, ClassBookAccess
+from content.models import Book, Chapter, Material, DidacticSequence, ClassBookAccess, KnowledgeArea
 from content.serializers import SequenceSerializer
 from quizzes.models import Alternative, Question, Quiz
 from .models import Class, ClassStudent, School, Student, Teacher, User
@@ -14,6 +14,19 @@ from .models import Class, ClassStudent, School, Student, Teacher, User
 class IsPlatformAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == 'admin'
+
+
+class KnowledgeAreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KnowledgeArea
+        fields = ['id', 'name']
+
+
+class KnowledgeAreaAdminViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsPlatformAdmin]
+    queryset = KnowledgeArea.objects.order_by('name')
+    serializer_class = KnowledgeAreaSerializer
+    pagination_class = None
 
 
 class AdminSequenceSerializer(SequenceSerializer):

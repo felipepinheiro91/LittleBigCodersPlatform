@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework.test import APITestCase
 from accounts.models import User, School, Teacher, Student, Class, ClassStudent
-from .models import Book, BookAccess, Chapter, Material, DidacticSequence
+from .models import Book, BookAccess, Chapter, Material, DidacticSequence, KnowledgeArea
 from quizzes.models import Quiz, Question, Alternative, Attempt
 
 
@@ -178,6 +178,17 @@ class PlatformTests(APITestCase):
         source.refresh_from_db()
         self.assertEqual(source.title, 'Sugestão')
 
+    def test_knowledge_areas_are_read_only_and_admin_only(self):
+        endpoint = '/api/admin/knowledge-areas/'
+        self.client.force_authenticate(self.student.user)
+        self.assertEqual(self.client.get(endpoint).status_code, 403)
+        self.authenticate_admin()
+        area = KnowledgeArea.objects.create(name='Área de teste')
+        response = self.client.get(endpoint)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn({'id': area.pk, 'name': area.name}, response.data)
+        self.assertEqual(self.client.post(endpoint, {'name': 'Outra'}).status_code, 405)
+
     def test_admin_guided_creation_end_to_end(self):
         admin = User.objects.create_superuser(username='admin', login='admin', name='Admin', role='admin', password='test-password')
         self.client.force_authenticate(admin)
@@ -192,9 +203,12 @@ class PlatformTests(APITestCase):
         book = self.client.post('/api/admin/books/', {'title': 'Livro novo', 'school_year': '6', 'teacher_ids': [teacher.data['id']], 'class_ids': [group.data['id']]}, format='json')
         chapter = self.client.post('/api/admin/chapters/', {'book': book.data['id'], 'number': 1, 'title': 'Capítulo inicial'}, format='json')
         material = self.client.post('/api/admin/materials/', {'chapter': chapter.data['id'], 'title': 'Avaliação', 'type': 'quiz'}, format='json')
-        quiz = self.client.post('/api/admin/quizzes/', {'material': material.data['id'], 'title': 'Prova inicial', 'description': '', 'active': True, 'questions': [{'statement': 'Qual opção?', 'order': 1, 'knowledge_area': None, 'alternatives': [{'text': 'Correta', 'order': 1, 'is_correct': True}, {'text': 'Incorreta', 'order': 2, 'is_correct': False}]}]}, format='json')
+        area = KnowledgeArea.objects.first()
+        quiz = self.client.post('/api/admin/quizzes/', {'material': material.data['id'], 'title': 'Prova inicial', 'description': '', 'active': True, 'questions': [{'statement': 'Qual opção?', 'order': 1, 'knowledge_area': area.pk, 'alternatives': [{'text': 'Correta', 'order': 1, 'is_correct': True}, {'text': 'Incorreta', 'order': 2, 'is_correct': False}]}]}, format='json')
         self.assertEqual(quiz.status_code, 201)
         self.assertEqual(Quiz.objects.get(pk=quiz.data['id']).questions.count(), 1)
+        self.assertEqual(Quiz.objects.get(pk=quiz.data['id']).questions.get().knowledge_area_id, area.pk)
+        self.assertEqual(self.client.get(f"/api/admin/quizzes/{quiz.data['id']}/").data['questions'][0]['knowledge_area'], area.pk)
         edited_student = self.client.put(f"/api/admin/students/{student.data['id']}/", {'name': 'Discente Editado', 'login': 'discente.novo', 'email': '', 'password': '', 'school': school.data['id'], 'grade': '7', 'is_individual_customer': False}, format='json')
         self.assertEqual(edited_student.status_code, 200)
         self.assertEqual(edited_student.data['grade'], '7')

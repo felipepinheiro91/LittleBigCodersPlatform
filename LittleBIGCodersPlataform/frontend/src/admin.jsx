@@ -38,6 +38,7 @@ export function AdminPanel() {
     teachers: useResource("admin/teachers/"),
     students: useResource("admin/students/"),
     classes: useResource("admin/classes/"),
+    knowledgeAreas: useResource("admin/knowledge-areas/"),
   };
   const reloadAll = () => Object.values(resources).forEach(resource => resource.reload());
   const active = sections.find(item => item[0] === section);
@@ -172,6 +173,8 @@ function QuizForm({ resources, onCreated, editing, onCancel }) {
         {form.questions.map((question, questionIndex) => <Box className="question-editor" key={questionIndex}>
           <Flex justify="space-between" gap="3"><Heading size="md">Questão {questionIndex + 1}</Heading>{form.questions.length > 1 && <Button type="button" size="sm" variant="ghost" onClick={() => set("questions", form.questions.filter((_, index) => index !== questionIndex))}>Remover questão</Button>}</Flex>
           <Field label="Enunciado *"><Textarea required value={question.statement} onChange={event => updateQuestion(questionIndex, current => ({ ...current, statement: event.target.value }))} /></Field>
+          <Resource resource={resources.knowledgeAreas}>{areas => <Field label="Área de conhecimento"><select value={question.knowledge_area ?? ""} onChange={event => updateQuestion(questionIndex, current => ({ ...current, knowledge_area: event.target.value ? Number(event.target.value) : null }))}><option value="">Sem área de conhecimento</option>{areas.map(area => <option key={area.id} value={area.id}>{area.name}</option>)}</select></Field>}</Resource>
+          <Text fontSize="sm" color="gray.600">Os acertos nesta questão contribuem para as conquistas da área selecionada.</Text>
           <QuestionImageInput question={question} onChange={patch => updateQuestion(questionIndex, current => ({ ...current, ...patch }))} />
           <Text fontWeight="800">Alternativas · selecione a resposta correta</Text>
           {question.alternatives.map((alternative, alternativeIndex) => <Flex key={alternativeIndex} gap="3" align="center">
