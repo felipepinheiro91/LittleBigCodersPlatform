@@ -290,19 +290,7 @@ class AdminMaterialSerializer(serializers.ModelSerializer):
         fields = ['id', 'chapter', 'chapters', 'title', 'type', 'url', 'content', 'teacher_only', 'knowledge_areas']
 
 
-class AdminAlternativeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Alternative
-        fields = ['text', 'order', 'is_correct']
-
-
-class AdminQuestionSerializer(serializers.ModelSerializer):
-    alternatives = AdminAlternativeSerializer(many=True)
-
-    class Meta:
-        model = Question
-        fields = ['statement', 'image', 'image_description', 'order', 'knowledge_area', 'alternatives']
-
+class QuizImageValidationMixin:
     def validate_image(self, value):
         if not value:
             return ''
@@ -323,6 +311,25 @@ class AdminQuestionSerializer(serializers.ModelSerializer):
         except Exception:
             raise serializers.ValidationError('Envie uma imagem JPG, PNG ou WebP válida de até 2 MB.')
         return value
+
+
+class AdminAlternativeSerializer(QuizImageValidationMixin, serializers.ModelSerializer):
+    class Meta:
+        model = Alternative
+        fields = ['text', 'image', 'image_description', 'order', 'is_correct']
+
+    def validate(self, attrs):
+        if not attrs.get('text', '').strip() and not attrs.get('image'):
+            raise serializers.ValidationError('Informe um texto ou uma imagem para a alternativa.')
+        return attrs
+
+
+class AdminQuestionSerializer(QuizImageValidationMixin, serializers.ModelSerializer):
+    alternatives = AdminAlternativeSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['statement', 'image', 'image_description', 'order', 'knowledge_area', 'alternatives']
 
     def validate_alternatives(self, alternatives):
         if len(alternatives) < 2 or sum(item.get('is_correct', False) for item in alternatives) != 1:

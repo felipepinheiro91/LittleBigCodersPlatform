@@ -21,6 +21,41 @@ class QuizViewSet(viewsets.ReadOnlyModelViewSet):
             quizzes = quizzes.filter(material_id=query_id(self.request, 'material'))
         return quizzes.order_by('id').distinct()
 
+    @action(detail=True, methods=['patch'], url_path='alternative-image')
+    def alternative_image(self, request, pk=None):
+        from accounts.admin_api import QuizImageValidationMixin
+        from rest_framework import serializers
+        from .models import Alternative
+        from .serializers import AlternativeSerializer
+
+        if request.user.role not in ('teacher', 'admin'):
+            raise PermissionDenied('Somente professores podem editar imagens das alternativas.')
+        quiz = self.get_object()
+        if request.user.role == 'teacher' and quiz.material.chapters.exclude(book__in=visible_books(request.user)).exists():
+            raise PermissionDenied('Este desafio também pertence a livros fora do seu acesso.')
+
+        class ImageSerializer(QuizImageValidationMixin, serializers.Serializer):
+            alternative = serializers.IntegerField(min_value=1)
+            image = serializers.CharField(allow_blank=True, max_length=2800100)
+            image_description = serializers.CharField(allow_blank=True, max_length=255, default='')
+
+        serializer = ImageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        with transaction.atomic():
+            Quiz.objects.select_for_update().get(pk=quiz.pk)
+            if quiz.attempts.exists():
+                raise ValidationError('Este desafio possui tentativas. As alternativas estão protegidas.')
+            alternative = Alternative.objects.filter(pk=data['alternative'], question__quiz=quiz).first()
+            if alternative is None:
+                raise ValidationError('Alternativa inválida para este desafio.')
+            if not alternative.text.strip() and not data['image']:
+                raise ValidationError('A alternativa precisa de texto ou imagem.')
+            alternative.image = data['image']
+            alternative.image_description = data['image_description'] if data['image'] else ''
+            alternative.save(update_fields=['image', 'image_description'])
+        return Response(AlternativeSerializer(alternative).data)
+
     @action(detail=True, methods=['post'])
     def start(self, request, pk=None):
         quiz = self.get_object()

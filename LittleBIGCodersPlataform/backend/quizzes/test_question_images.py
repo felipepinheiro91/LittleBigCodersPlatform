@@ -55,3 +55,57 @@ class QuestionImageTests(APITestCase):
         response = self.client.post('/api/admin/quizzes/', payload, format='json')
         self.assertEqual(response.status_code, 201, response.data)
         self.assertEqual(response.data['questions'][0]['image'], '')
+
+    def test_alternative_image_roundtrip_and_validation(self):
+        payload = self.payload('')
+        option = payload['questions'][0]['alternatives'][0]
+        option.update(text='', image=self.image, image_description='Quadrado azul')
+        response = self.client.post('/api/admin/quizzes/', payload, format='json')
+        self.assertEqual(response.status_code, 201, response.data)
+        quiz_id = response.data['id']
+        response = self.client.get(f'/api/quizzes/{quiz_id}/')
+        option = response.data['questions'][0]['alternatives'][0]
+        self.assertEqual(option['image'], self.image)
+        self.assertEqual(option['image_description'], 'Quadrado azul')
+        self.assertNotIn('is_correct', option)
+        payload['questions'][0]['alternatives'][0]['image'] = 'data:image/png;base64,aW52YWxpZA=='
+        response = self.client.post('/api/admin/quizzes/', payload, format='json')
+        self.assertEqual(response.status_code, 400)
+        payload['questions'][0]['alternatives'][0]['image'] = ''
+        response = self.client.post('/api/admin/quizzes/', payload, format='json')
+        self.assertEqual(response.status_code, 400)
+
+    def test_teacher_can_edit_accessible_alternative_images(self):
+        from accounts.models import Teacher, School
+        from quizzes.models import Attempt
+        school = School.objects.create(name='Escola')
+        user = User.objects.create_user(username='image-teacher', login='image-teacher', email='image-teacher@example.test', role='teacher')
+        teacher = Teacher.objects.create(user=user, school=school)
+        self.chapter.book.teachers.add(teacher)
+        response = self.client.post('/api/admin/quizzes/', self.payload(''), format='json')
+        quiz_id = response.data['id']
+        option_id = self.client.get(f'/api/quizzes/{quiz_id}/').data['questions'][0]['alternatives'][0]['id']
+        url = f'/api/quizzes/{quiz_id}/alternative-image/'
+        self.client.force_authenticate(user)
+        body = {'alternative': option_id, 'image': self.image, 'image_description': 'Azul'}
+        response = self.client.patch(url, body, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['image'], self.image)
+        self.assertNotIn('is_correct', response.data)
+        response = self.client.patch(url, {**body, 'image': ''}, format='json')
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data['image'], '')
+        outsider = User.objects.create_user(username='outsider', login='outsider', email='outsider@example.test', role='teacher')
+        self.client.force_authenticate(outsider)
+        self.assertEqual(self.client.patch(url, body, format='json').status_code, 404)
+        self.client.force_authenticate(user)
+        self.chapter.book.teachers.remove(teacher)
+        self.assertEqual(self.client.patch(url, body, format='json').status_code, 404)
+        self.chapter.book.teachers.add(teacher)
+        from accounts.models import Student
+        student_user = User.objects.create_user(username='image-student', login='image-student', email='image-student@example.test', role='student')
+        student = Student.objects.create(user=student_user, school=school)
+        Attempt.objects.create(quiz_id=quiz_id, student=student)
+        self.assertEqual(self.client.patch(url, body, format='json').status_code, 400)
+        self.client.force_authenticate(student_user)
+        self.assertEqual(self.client.patch(url, body, format='json').status_code, 403)

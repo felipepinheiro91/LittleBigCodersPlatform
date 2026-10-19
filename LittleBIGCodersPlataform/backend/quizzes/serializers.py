@@ -5,7 +5,7 @@ from .models import Quiz, Question, Alternative, Attempt
 class AlternativeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alternative
-        fields = ['id', 'text', 'order']
+        fields = ['id', 'text', 'image', 'image_description', 'order']
 
 
 class QuestionSerializer(serializers.ModelSerializer):

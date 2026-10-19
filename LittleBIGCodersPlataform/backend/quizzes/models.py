@@ -21,7 +21,9 @@ class Question(models.Model):
 
 class Alternative(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='alternatives')
-    text = models.TextField()
+    text = models.TextField(blank=True)
+    image = models.TextField(blank=True)
+    image_description = models.CharField(max_length=255, blank=True)
     is_correct = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=1)
 

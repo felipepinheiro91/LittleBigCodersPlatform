@@ -177,14 +177,14 @@ function QuizForm({ resources, onCreated, editing, onCancel }) {
           <Text fontSize="sm" color="gray.600">Os acertos nesta questão contribuem para as conquistas da área selecionada.</Text>
           <QuestionImageInput question={question} onChange={patch => updateQuestion(questionIndex, current => ({ ...current, ...patch }))} />
           <Text fontWeight="800">Alternativas · selecione a resposta correta</Text>
-          {question.alternatives.map((alternative, alternativeIndex) => <Flex key={alternativeIndex} gap="3" align="center">
+          {question.alternatives.map((alternative, alternativeIndex) => <Box key={alternativeIndex}><Flex gap="3" align="center">
             <input aria-label={`Marcar alternativa ${alternativeIndex + 1} como correta na questão ${questionIndex + 1}`} type="radio" name={`correct-${questionIndex}`} checked={alternative.is_correct} onChange={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => ({ ...item, is_correct: index === alternativeIndex })) }))} />
-            <Input required aria-label={`Alternativa ${alternativeIndex + 1} da questão ${questionIndex + 1}`} placeholder={`Alternativa ${alternativeIndex + 1}`} value={alternative.text} onChange={event => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => index === alternativeIndex ? { ...item, text: event.target.value } : item) }))} />
+            <Input required={!alternative.image} aria-label={`Alternativa ${alternativeIndex + 1} da questão ${questionIndex + 1}`} placeholder={`Alternativa ${alternativeIndex + 1}`} value={alternative.text} onChange={event => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => index === alternativeIndex ? { ...item, text: event.target.value } : item) }))} />
             {question.alternatives.length > 2 && <Button type="button" variant="ghost" aria-label={`Remover alternativa ${alternativeIndex + 1}`} onClick={() => updateQuestion(questionIndex, current => {
               const remaining = current.alternatives.filter((_, index) => index !== alternativeIndex);
               return { ...current, alternatives: remaining.some(item => item.is_correct) ? remaining : remaining.map((item, index) => ({ ...item, is_correct: index === 0 })) };
             })}>×</Button>}
-          </Flex>)}
+          </Flex><QuestionImageInput alternative question={alternative} onChange={patch => updateQuestion(questionIndex, current => ({ ...current, alternatives: current.alternatives.map((item, index) => index === alternativeIndex ? { ...item, ...patch } : item) }))} /></Box>)}
           <Button type="button" variant="outline" alignSelf="start" onClick={() => updateQuestion(questionIndex, current => ({ ...current, alternatives: [...current.alternatives, { text: "", is_correct: false }] }))}>＋ Adicionar alternativa</Button>
         </Box>)}
         <Button type="button" variant="outline" onClick={() => set("questions", [...form.questions, emptyQuestion()])}>＋ Adicionar questão</Button>

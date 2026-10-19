@@ -2,13 +2,13 @@ import React, { useRef, useState } from "react";
 import { Box, Button, Input, Text } from "@chakra-ui/react";
 import { Field } from "./ui";
 
-export function QuestionImage({ question }) {
+export function QuestionImage({ question, alternative = false }) {
   const [failed, setFailed] = useState(false);
   if (!question.image) return null;
-  return failed ? <Text role="alert" color="orange.700">Não foi possível carregar a imagem desta questão. Avise o professor.</Text> : <img className="question-image" src={question.image} alt={question.image_description || "Imagem do enunciado"} onError={() => setFailed(true)} />;
+  return failed ? <Text role="alert" color="orange.700">Não foi possível carregar a imagem {alternative ? "desta alternativa" : "desta questão"}. Avise o professor.</Text> : <img className="question-image" src={question.image} alt={question.image_description || (alternative ? "Imagem da alternativa" : "Imagem do enunciado")} onError={() => setFailed(true)} />;
 }
 
-export function QuestionImageInput({ question, onChange }) {
+export function QuestionImageInput({ question, onChange, alternative = false }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const readerRef = useRef(null);
@@ -31,9 +31,9 @@ export function QuestionImageInput({ question, onChange }) {
     reader.readAsDataURL(file);
   }
   return <Box>
-    <Field label="Imagem da questão (opcional · JPG, PNG ou WebP · até 2 MB)"><Input type="file" accept="image/jpeg,image/png,image/webp" onChange={select} /></Field>
+    <Field label={`Imagem ${alternative ? "da alternativa" : "da questão"} (opcional · JPG, PNG ou WebP · até 2 MB)`}><Input type="file" accept="image/jpeg,image/png,image/webp" onChange={select} /></Field>
     {busy && <Text role="status">Carregando imagem…</Text>}
     {error && <Text role="alert" color="red.700">{error}</Text>}
-    {question.image && <><QuestionImage key={question.image} question={question} /><Field label="Descrição da imagem (para leitores de tela)"><Input maxLength={255} value={question.image_description || ""} onChange={event => onChange({ image_description: event.target.value })} /></Field><Button type="button" variant="outline" mt="2" onClick={() => { readerRef.current?.abort(); setBusy(false); onChange({ image: "", image_description: "" }); }}>Remover imagem</Button></>}
+    {question.image && <><QuestionImage key={question.image} question={question} alternative={alternative} /><Field label="Descrição da imagem (para leitores de tela)"><Input maxLength={255} value={question.image_description || ""} onChange={event => onChange({ image_description: event.target.value })} /></Field><Button type="button" variant="outline" mt="2" onClick={() => { readerRef.current?.abort(); setBusy(false); onChange({ image: "", image_description: "" }); }}>Remover imagem</Button></>}
   </Box>;
 }

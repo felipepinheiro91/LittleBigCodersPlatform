@@ -81,3 +81,11 @@ A remoção de escolas com vínculos e de registros protegidos por histórico é
 ```
 
 O frontend usa as rotas reais e não possui fallback para mocks. O projeto está configurado para desenvolvimento local com SQLite. Agregações são calculadas sob demanda; bases grandes precisarão de paginação, agregações em lote e índices conforme volume observado. Não há exportação BI, recuperação de senha ou leitura de câmera.
+
+### Imagens nas alternativas
+
+As alternativas retornam `image` e `image_description`. No cadastro administrativo, aceitam texto, imagem ou ambos. Imagens devem ser Data URI JPG, PNG ou WebP válidas de até 2 MB.
+
+Professores podem usar `PATCH /api/quizzes/{id}/alternative-image/` com `alternative` (ID), `image` e `image_description`. Enviar `image: ""` remove a imagem se existir texto. O desafio deve estar acessível ao professor em todos os livros vinculados e não possuir tentativas. Estudantes não podem editar imagens; a resposta não expõe o gabarito.
+
+Execute `python manage.py migrate` antes de iniciar a versão com esse recurso.
