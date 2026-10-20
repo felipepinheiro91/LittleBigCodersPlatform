@@ -66,13 +66,12 @@
       },
       {
         "paragraphs": [
-          "Clube da Computação",
-          "Todos os estudantes podem participar do nosso clube, com encontros mensais, que abordam temas variados dentro do universo da Computação. Uma oportunidade para aprender e interagir com crianças de todo o Brasil."
+          "Uma plataforma para aprender e acompanhar cada conquista",
+          "Na plataforma Little BIG Coders, os estudantes acessam os conteúdos dos seus livros, exploram materiais de apoio e respondem às atividades em um só lugar. Uma experiência que complementa os estudos em casa e ajuda a organizar a jornada de aprendizagem.",
+          "A cada etapa, o estudante pode acompanhar seus pontos, visualizar sua evolução nas áreas de conhecimento e descobrir novas conquistas. Assim, cada avanço ganha visibilidade e se torna um incentivo para continuar aprendendo."
         ],
-        "images": [
-          "/landing/legacy/b83187823487d906.webp",
-          "/landing/legacy/a06bef658e2e1eb4.webp"
-        ],
+        "images": ["/landing/plataforma.png"],
+        "imageKind": "platform",
         "links": [],
         "embeds": []
       },
@@ -144,20 +143,12 @@
             "src": "/landing/legacy/8edd1420037f0769.webp"
           },
           {
-            "caption": "Isac, Vitória - ES",
+            "caption": "Clara e Michel, Canela - RS",
             "src": "/landing/legacy/a7f52ee7e14746df.webp"
           },
           {
             "caption": "Pedro, Lauro de Freitas - BA",
-            "src": "/landing/legacy/b78fbfec90b13b02.webp"
-          },
-          {
-            "caption": "Caleb, Guarapuava - PR",
             "src": "/landing/legacy/eeb02eca2aa40b75.webp"
-          },
-          {
-            "caption": "Alice, Feira de Santana - BA",
-            "src": "/landing/legacy/2ec61ae0bb3cf6d6.webp"
           }
         ]
       }

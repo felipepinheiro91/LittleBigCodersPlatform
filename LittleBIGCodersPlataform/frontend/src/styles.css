@@ -7,10 +7,9 @@ button, input, select, textarea { font-family: inherit; }
 .logo-mark { align-items: center; background: #5b41d7; border-radius: 11px; color: white; display: flex; font-size: .82rem; font-weight: 900; height: 35px; justify-content: center; width: 38px; }
 .login-page { background: linear-gradient(135deg, #f2efff 0%, #fcf2ed 100%); }
 .login-illustration { background: linear-gradient(145deg, #5d41d5, #39228c); color: white; position: relative; }
-.rocket { align-items: center; display: flex; justify-content: center; min-height: 220px; position: relative; z-index: 1; }
-.orbit { border: 1px solid rgba(255,255,255,.35); border-radius: 50%; position: absolute; }
-.orbit-one { height: 190px; transform: rotate(-25deg); width: 340px; }
-.orbit-two { height: 280px; transform: rotate(40deg); width: 170px; }
+.login-brand { margin: 0; }
+.login-brand img { display: block; width: min(100%, 280px); height: auto; }
+.login-children { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 1047; object-fit: contain; border-radius: 20px; }
 .field-label { color: #554c70; font-size: .875rem; font-weight: 800; margin-bottom: .45rem; }
 .sidebar { background: white; display: flex; flex-direction: column; min-height: 100vh; }
 .sidebar-link { border-radius: 12px !important; gap: .75rem; min-height: 44px; }

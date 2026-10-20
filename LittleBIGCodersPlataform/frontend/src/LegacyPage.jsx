@@ -30,16 +30,16 @@ export function LegacyPage({ name }) {
       const Heading = hasTitle ? "h2" : "h1";
       if (isHeading) hasTitle = true;
       const paragraphs = isHeading ? rest : block.paragraphs;
-      return <section className={`lbc-legacy-section${colorClass} ${block.images.length === 1 && block.paragraphs.length ? "has-image" : ""}`} key={index}>
+      return <section className={`lbc-legacy-section${colorClass} ${block.imageKind === "platform" ? "lbc-platform-section" : block.images.length === 1 && block.paragraphs.length ? "has-image" : ""}`} key={index}>
         <div className="lbc-container lbc-legacy-block">
           {block.paragraphs.length > 0 && <div className="lbc-legacy-copy">
             {isHeading && <Heading>{first}</Heading>}
             {paragraphs.map((paragraph, position) => <Paragraph key={position} text={paragraph} link={block.inlineLink} />)}
             {first === "Alta demanda por profissionais de tecnologia no Brasil" && <p className="lbc-legacy-note">Referência histórica do site original: projeção para 2025.</p>}
           </div>}
-          {block.images.length === 1 && <div className="lbc-legacy-images"><img src={block.images[0]} alt={first || "Imagem original da Little BIG Coders"} loading="lazy" /></div>}
+          {block.images.length === 1 && <div className="lbc-legacy-images"><img src={block.images[0]} alt={block.imageKind === "platform" ? "Plataforma Little BIG Coders em um notebook e um tablet, com livros, pontos e conquistas do estudante" : first || "Imagem original da Little BIG Coders"} loading="lazy" /></div>}
           {block.images.length > 1 && (block.imageKind === "photos" ? <ImageCarousel label={first || page.title}>{block.images.map((src, position) => <img key={`${src}-${position}`} src={src} alt={`Fotografia ${position + 1}: ${first || page.title}`} loading="lazy" />)}</ImageCarousel> : <div className="lbc-legacy-images multiple">{block.images.map((src, position) => <img key={`${src}-${position}`} src={src} alt={`Ilustração original ${position + 1}: ${first || page.title}`} loading="lazy" />)}</div>)}
-          {block.gallery && <ImageCarousel label="Famílias em todo o Brasil">{block.gallery.map(photo => <figure key={photo.caption}><img src={photo.src} alt={photo.caption} loading="lazy" /><figcaption>{photo.caption}</figcaption></figure>)}</ImageCarousel>}
+          {block.gallery && <ImageCarousel label="Famílias em todo o Brasil">{block.gallery.map(photo => <figure key={photo.src}><img src={photo.src} alt={photo.caption} loading="lazy" /><figcaption>{photo.caption}</figcaption></figure>)}</ImageCarousel>}
           {block.embeds.map(src => <div className="lbc-testimonial" key={src}>{block.embedUnavailable ? <div className="lbc-testimonial-unavailable"><span aria-hidden="true">▶</span><p>O vídeo de depoimento do site antigo estava indisponível durante a migração. A reprodução depende das permissões do responsável pela publicação.</p><a className="lbc-text-link" href={safeHref(src)} target="_blank" rel="noopener noreferrer">Ver depoimento original ↗</a></div> : <iframe src={src} title="Depoimento de uma família Little BIG Coders" loading="lazy" allow="fullscreen; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />}</div>)}
           {block.links.length > 0 && <div className="lbc-legacy-links">{block.links.map((link, position) => <a className="lbc-button lbc-button-dark" key={`${link.href}-${position}`} href={safeHref(link.href)}>{link.text}</a>)}</div>}
         </div>
