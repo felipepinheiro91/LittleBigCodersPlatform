@@ -99,3 +99,12 @@ Registrar abaixo as etapas efetivamente concluídas; criar recursos não signifi
 - Entrar em plataforma.littlebigcoders.com.br/ agora normaliza a URL para /#login antes de renderizar a aplicação. O Login do www vai para a plataforma; Voltar ao site vai para www; sair da conta retorna ao login.
 - Aplicação reconstruída e frontend atualizado; banco e API não precisaram de alteração.
 - Reaplicar domínios com: python3 /opt/littlebigcoders/source/deploy/vps/configure-domain.py plataforma.littlebigcoders.com.br --site-domain www.littlebigcoders.com.br
+
+## CD ativado em 21/11/2026
+
+- Branch de produção: develop, repositório GitHub existente.
+- Serviço littlebigcoders-cd.timer habilitado na VPS, consulta a cada 60 segundos. Não depende do computador local, token GitHub, chave SSH ou webhook de entrada.
+- Primeiro deploy automático do commit 7db1270a28b6fe9e686e0246d53e03c498b50f8 concluído com DEPLOY_OK. API e frontend passam a usar imagens identificadas pelo SHA do commit e releases separados.
+- Pipeline faz build, validações, testes de autenticação, dump pré-deploy, migrations e checagens da aplicação. Falhas de saúde retornam às imagens anteriores, sem reverter automaticamente migrations do banco.
+- Quatro testes locais de proteção do executor passaram, cobrindo falha de build, rollback após falha de saúde, registro de sucesso com backup e bloqueio de repetição de commit falho.
+- Operação e reinstalação descritas em CD.md e install-cd.py.

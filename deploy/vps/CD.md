@@ -12,7 +12,7 @@ token do GitHub, webhook público nem runner com acesso de entrada à VPS.
 
 1. Obter o SHA exato da branch e exportar os fontes para uma pasta por commit.
 2. Construir API e frontend com tags imutáveis e o SHA nas imagens.
-3. Executar verificações Django e testes de autenticação em SQLite isolado.
+3. Executar verificações Django, conferir migrations faltantes e testar autenticação em SQLite isolado.
 4. Validar Compose e criar um dump privado do PostgreSQL antes das migrations.
 5. Executar migrations uma única vez e atualizar somente o projeto Compose
    `littlebigcoders`, preservando domínios, configuração privada e banco dedicado.
@@ -28,6 +28,10 @@ Commits que falharam não são repetidos a cada minuto. Um novo push libera uma 
 tentativa; para repetir o mesmo SHA, execute manualmente com `--retry`.
 
 ## Operação
+
+Para instalar ou atualizar o supervisor a partir de uma cópia revisada destes
+arquivos na VPS, execute `python3 deploy/vps/install-cd.py` como root. A instalação
+preserva segredos, estado do último deploy e labels de domínio já administrados pelo CD.
 
 ```bash
 systemctl status littlebigcoders-cd.timer

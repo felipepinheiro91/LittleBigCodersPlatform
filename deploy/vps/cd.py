@@ -109,6 +109,7 @@ def deploy():
                 str(release / 'LittleBIGCodersPlataform' / folder))
         image = f'littlebigcoders-api:{sha}'
         runtime(image, 'python', 'manage.py', 'check', '--deploy', '--fail-level', 'ERROR')
+        runtime(image, 'python', 'manage.py', 'makemigrations', '--check', '--dry-run', '--noinput')
         run('docker', 'run', '--rm', '-e', 'DJANGO_SETTINGS_MODULE=config.settings',
             image, 'python', 'manage.py', 'test', 'accounts.test_authentication', '--noinput')
         override = {'services': {name: {'image': f'littlebigcoders-{name}:{sha}'}
