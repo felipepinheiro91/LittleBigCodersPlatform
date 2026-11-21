@@ -1,0 +1,15 @@
+[Unit]
+Description=Deploy LittleBigCoders develop from GitHub
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/littlebigcoders/cd/cd.py
+TimeoutStartSec=30min
+UMask=0077
+Nice=10
+StandardOutput=journal
+StandardError=journal
+
