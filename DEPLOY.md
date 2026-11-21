@@ -1,5 +1,9 @@
 # Render + Neon
 
+Deploy automático da VPS: veja [CD e operação](deploy/vps/CD.md).
+
+Preparação da migração para a VPS Hostinger/Coolify: veja [procedimento e validação](deploy/vps/MIGRATION.md) e [estado verificado](deploy/vps/STATUS.md). A configuração abaixo descreve a hospedagem de origem.
+
 Arquitetura: React/Vite como Static Site no Render, Django como Web Service no Render e PostgreSQL no Neon. O ambiente local continua usando SQLite e `config.settings`.
 
 ## Preparação

@@ -10,3 +10,12 @@ venv/
 staticfiles/
 media/
 *.sqlite3
+*.dump
+deploy/vps/backups/
+tmp/vps-frontend-build/
+tmp/vps-manifest.*
+tmp/vps-sequences.sql
+tmp/vps-runtime-rehearsal.py
+tmp/vps-known-hosts
+tmp/dns-repair/
+tmp/cd-*

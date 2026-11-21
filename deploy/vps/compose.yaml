@@ -1,0 +1,34 @@
+name: littlebigcoders
+services:
+  api:
+    image: littlebigcoders-api:ready
+    build:
+      context: ../../LittleBIGCodersPlataform/backend
+    env_file: /opt/littlebigcoders/application.env
+    restart: unless-stopped
+    mem_limit: 512m
+    networks:
+      coolify:
+        aliases:
+          - littlebigcoders-api
+    expose:
+      - "8000"
+  web:
+    image: littlebigcoders-web:ready
+    build:
+      context: ../../LittleBIGCodersPlataform/frontend
+      args:
+        VITE_API_URL: /api
+    environment:
+      API_UPSTREAM: littlebigcoders-api:8000
+    restart: unless-stopped
+    mem_limit: 128m
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:18000:80"
+    networks:
+      - coolify
+networks:
+  coolify:
+    external: true
